@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title>LazyCoder || elie</title>
+
+  <style media="screen">
+      .alert {
+        margin-left: 25%;
+        margin-right: 25%;
+        padding: 20px;
+        background-color: #f44336;
+        color: white;
+      }
+
+      .w3-panel p {
+        padding-top: 10px;
+      }
+
+      .closebtn {
+        margin-left: 15px;
+        color: white;
+        font-weight: bold;
+        float: right;
+        font-size: 22px;
+        line-height: 20px;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+
+      .closebtn:hover {
+        color: black;
+      }
+    </style>
+
+  <style media="screen">
+    a:link {
+      text-decoration: none;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Roboto", sans-serif;
+    }
+
+    header {
+      position: fixed;
+      background: #22242A;
+      padding: 20px;
+      width: 100%;
+
+      z-index: 1;
+    }
+
+    .left_area h3 {
+      color: #fff;
+      margin: 0px;
+      text-transform: uppercase;
+      font-size: 22px;
+      font-weight: 900;
+    }
+
+    .left_area span {
+      color: #19B3D3;
+    }
+
+    .logout_btn {
+      padding: 5px;
+      background: #19B3D3;
+      text-decoration: none;
+      float: right;
+      margin-top: -30px;
+      margin-right: 40px;
+      border-radius: 2px;
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+      transition: 0.5s;
+
+    }
+
+    .logout_btn:hover {
+      background: #0B87A6;
+    }
+
+    .sidebar {
+      background: #2f323a;
+      margin-top: 70px;
+      padding-top: 30px;
+      position: fixed;
+      left: 0;
+      width: 250px;
+      height: 100%;
+      transition: 0.5s;
+      transition-property: left;
+    }
+
+    .sidebar .profile_image {
+      width: 100px;
+      height: 100px;
+      border-radius: 100px;
+      margin-bottom: 10px;
+    }
+
+    .sidebar h4 {
+      color: #ccc;
+      margin-top: 0;
+      margin-bottom: 20px;
+    }
+
+    .sidebar a {
+      color: #fff;
+      display: block;
+      width: 100%;
+      line-height: 60px;
+      text-decoration: none;
+      padding-left: 40px;
+      box-sizing: border-box;
+      transition: 0.5s;
+
+    }
+
+    .sidebar a:hover {
+      background: #19B3D3;
+    }
+
+    .sidebar i {
+      padding-right: 10px;
+    }
+
+    label #sidebar_btn {
+      z-index: 1;
+      color: #fff;
+      position: fixed;
+      cursor: pointer;
+      left: 300px;
+      font-size: 20px;
+      margin: 5px 0;
+      transition: 0.5s;
+      transition-property: color;
+    }
+
+    label #sidebar_btn:hover {
+      color: #19B3D3;
+    }
+
+    #check:checked~.sidebar {
+      left: -190px;
+    }
+
+    #check:checked~.sidebar a span {
+      display: none;
+    }
+
+    #check:checked~.sidebar a {
+      font-size: 20px;
+      margin-left: 170px;
+      width: 80px;
+    }
+
+    .content {
+      margin-left: 250px;
+      background: url(background.png) no-repeat;
+      background-position: center;
+      background-size: cover;
+      height: 100vh;
+      transition: 0.5s;
+    }
+
+    #check:checked~.content {
+      margin-left: 60px;
+    }
+
+    #check {
+      display: none;
+    }
+  </style>
+
+  <style>
+    /*---------------------------------------
+   Social section
+-----------------------------------------*/
+    footer {
+      padding: 0px 0px 0px 0px;
+      background-color: black;
+      margin: 0px;
+    }
+
+    .fa {
+      padding: 20px;
+      font-size: 23px;
+      width: 60px;
+      text-align: center;
+      text-decoration: none;
+      margin: 5px 2px;
+      border-radius: 50%;
+    }
+
+    .fa:hover {
+      opacity: 0.5;
+      text-decoration: none;
+    }
+
+    .fa-facebook {
+      background: #3B5998;
+      color: white;
+      margin-top: 30px;
+    }
+
+    .fa-whatsapp {
+      background: #25d366;
+      color: white;
+    }
+ .fa-youtube {
+      background: red;
+      color: blue;
+    }
+
+    .fa-twitter {
+      background: #55ACEE;
+      color: white;
+    }
+
+    .fa-instagram {
+      background: #125688;
+      color: white;
+    }
+
+    p {
+      text-align: center;
+
+    }
+  </style>
+  <style type="text/css">
+    a:link {
+      text-decoration: none;
+    }
+
+    .order-card {
+      color: #fff;
+    }
+
+    .bg-c-blue {
+      background: linear-gradient(45deg, #4099ff, #73b4ff);
+    }
+
+    .bg-c-green {
+      background: linear-gradient(45deg, #2ed8b6, #59e0c5);
+    }
+
+    .bg-c-yellow {
+      background: linear-gradient(45deg, #FFB64D, #ffcb80);
+    }
+
+    .bg-c-pink {
+      background: linear-gradient(45deg, #FF5370, #ff869a);
+    }
+
+
+    .card {
+      border-radius: 5px;
+      -webkit-box-shadow: 0 1px 2.94px 0.06px rgba(4, 26, 55, 0.16);
+      box-shadow: 0 1px 2.94px 0.06px rgba(4, 26, 55, 0.16);
+      border: none;
+      margin-bottom: 30px;
+      -webkit-transition: all 0.3s ease-in-out;
+      transition: all 0.3s ease-in-out;
+    }
+
+    .card .card-block {
+      padding: 25px;
+    }
+
+    .order-card i {
+      font-size: 26px;
+    }
+
+    .f-left {
+      float: left;
+    }
+
+    .f-right {
+      float: right;
+    }
+  </style>
+
+<style type="text/css">
+    a:link {
+      text-decoration: none;
+    }
+
+    .order-card {
+      color: #fff;
+    }
+
+    .bg-c-blue {
+      background: linear-gradient(45deg, #4099ff, #73b4ff);
+    }
+
+    .bg-c-green {
+      background: linear-gradient(45deg, #2ed8b6, #59e0c5);
+    }
+
+    .bg-c-yellow {
+      background: linear-gradient(45deg, #FFB64D, #ffcb80);
+    }
+
+    .bg-c-pink {
+      background: linear-gradient(45deg, #FF5370, #ff869a);
+    }
+
+
+    .card {
+      border-radius: 5px;
+      -webkit-box-shadow: 0 1px 2.94px 0.06px rgba(4, 26, 55, 0.16);
+      box-shadow: 0 1px 2.94px 0.06px rgba(4, 26, 55, 0.16);
+      border: none;
+      margin-bottom: 30px;
+      -webkit-transition: all 0.3s ease-in-out;
+      transition: all 0.3s ease-in-out;
+    }
+
+    .card .card-block {
+      padding: 25px;
+    }
+
+    .order-card i {
+      font-size: 26px;
+    }
+
+    .f-left {
+      float: left;
+    }
+
+    .f-right {
+      float: right;
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <link href="http://netdna.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="static/css/nav.css">
+    <link rel="stylesheet" href="static/css/index.css">
+    <link rel="stylesheet" href="static/css/cards.css">
+    <link rel="stylesheet" href="static/css/footer.css">
+
+
+</head>
+
+<body>
+
+  <input type="checkbox" id="check">
+  <!--header area start-->
+  <header>
+    <label for="check">
+      <i class="fas fa-bars" id="sidebar_btn"></i>
+    </label>
+    <div class="left_area">
+      <h3>Salon Reservation </h3>
+    </div>
+    <div class="right_area">
+      <a href="{% url 'system-logout' %}" class="logout_btn">Logout</a>
+    </div>
+  </header>
+  <!--header area end-->
+  <!--sidebar start-->
+
+
+  <div class="sidebar">
+    <center>
+
+
+      <img src="images/customer.png" class="profile_image" alt="Customer">
+      <h4>Customer First Name</h4>
+
+    </center>
+
+    <a href="customer_dashboard.html"><i class="fas fa-desktop"></i><span>Dashboard</span></a>
+    <a href="manage_appointment.html"><i class="fas fa-desktop"></i><span>Manage Appointments</span></a>
+    <a href="about_salons.html"><i class="fas fa-desktop"></i><span>About salons</span></a>
+
+  </div>
+  <!--sidebar end-->
+
+
+
+  <div class="content">
+    <br><br><br><br><br>
+
+
+<div class="container">
+    <br><br><br><br><br>
+      {% if messages %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+     {% for message in messages %}
+      <p>{{message}}</p>
+      {% endfor %}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  {% endif %}
+    <div class="row">
+      <div class="col-md-4 col-xl-3">
+        <div class="card bg-c-blue order-card">
+          <div class="card-block">
+            <h6 class="m-b-20">Names</h6>
+            <h3 class="text-right"><i class="fas fa-user-tie f-left"></i></h3>
+            <p><span style="font-size: 15px;">{{customer.owner.first_name}}</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-xl-3">
+        <div class="card bg-c-blue order-card">
+          <div class="card-block">
+            <h6 class="m-b-20">Saloons</h6>
+            <h2 class="text-right"><i class="fas fa-user-tie f-left"></i></h2>
+            <a  style="margin-left:12px;" href="{% url 'display-saloons' %}">Popular saloons</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-xl-3">
+        <div class="card bg-c-green order-card">
+          <div class="card-block">
+            <h6 class="m-b-20">Appointments</h6>
+            <h2 class="text-right"><i class="fas fa-mobile-alt f-left"></i></h2>
+            <a style="margin-left:12px;" href="">Your appointments</a>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+
+  <script src="http://netdna.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
+  <script type="text/javascript">
+
+  </script>
+
+  <br><br>
+<div class="w3-panel w3-blue ">
+  <p>Notice Board</p>
+</div><br>
+{% if notifications %}
+    {% for notification in notifications %}
+      <div class="alert">
+        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+        <strong>{{notification.date}} || By : {{notification.origin.email}}</strong><br> {{notification.message}}
+      </div>
+    {% endfor %}
+    {% endif %}
+
+
+    <br><br><br>
+
+
+    <footer>
+
+  <p>
+    <a href="https://www.google.com/search?q=facebook+login&oq=facebook+login&aqs=chrome..69i57j69i64j69i60l4.3222j0j7&sourceid=chrome&ie=UTF-8" class="fa fa-facebook"></a>
+  <!--  <a href="https://web.whatsapp.com/" class="fa fa-whatsapp"></a>-->
+    <a href="https://www.instagram.com/?hl=en" class="fa fa-instagram"></a>
+    <a href="https://twitter.com/" class="fa fa-twitter"></a>
+    <a href="https://codecatalyst.udemy.com/organization/search/?src=ukw&q=sequence%20diagram" class="fa fa-youtube"></a>
+  </p>
+
+  <br>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12 col-sm-12">
+        <div style="color:#ffffff;" class="wow fadeInUp footer-copyright">
+          <p>Made in Rwanda <br>
+            Copyright &copy; 2020 Adventist University Of Central Africa </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+  </div>
+  <!--content end-->
+
+</body>
+
+</html>

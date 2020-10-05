@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="static/css/nav.css">
+    <link rel="stylesheet" href="static/css/index.css">
+    <link rel="stylesheet" href="static/css/cards.css">
+    <link rel="stylesheet" href="static/css/footer.css">
+  <title>LazyCoder || Elie</title>
+
+
+  <style type="text/css">
+    body {
+      color: #aa082e;
+      background-color: #b6bde7;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    a:link {
+      text-decoration: none;
+    }
+
+    .note {
+      text-align: center;
+      height: 80px;
+      background: -webkit-linear-gradient(left, #0072ff, #8811c5);
+      color: #fff;
+      font-weight: bold;
+      line-height: 80px;
+    }
+
+    .form-content {
+      padding: 5%;
+      border: 1px solid #ced4da;
+      margin-bottom: 2%;
+    }
+
+    .form-control {
+      border-radius: 1.5rem;
+    }
+
+    .btnSubmit {
+      border: none;
+      border-radius: 1.5rem;
+      padding: 1%;
+      width: 20%;
+      cursor: pointer;
+      background: #0062cc;
+      color: #fff;
+    }
+  </style>
+
+  <style type="text/css">
+    body {
+      color: #aa082e;
+      background-color: #b6bde7;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    a:link {
+      text-decoration: none;
+    }
+
+    .note {
+      text-align: center;
+      height: 80px;
+      background: -webkit-linear-gradient(left, #0072ff, #8811c5);
+      color: #fff;
+      font-weight: bold;
+      line-height: 80px;
+    }
+
+    .form-content {
+      padding: 5%;
+      border: 1px solid #ced4da;
+      margin-bottom: 2%;
+    }
+
+    .form-control {
+      border-radius: 1.5rem;
+    }
+
+    .btnSubmit {
+      border: none;
+      border-radius: 1.5rem;
+      padding: 1%;
+      width: 20%;
+      cursor: pointer;
+      background: #0062cc;
+      color: #fff;
+    }
+  </style>
+
+  <style media="screen">
+    .jumbotron {
+      margin-top: 0px;
+      margin-bottom: 0px;
+    }
+
+    .jumbotron h1 {
+      text-align: center;
+    }
+
+    .alert {
+      margin: 0px;
+    }
+  </style>
+
+  <style>
+   /*---------------------------------------
+  Social section
+  -----------------------------------------*/
+   footer {
+     padding: 0px 0px 0px 0px;
+     background-color: black;
+     margin: 0px;
+   }
+
+   .fa {
+     padding: 20px;
+     font-size: 23px;
+     width: 60px;
+     text-align: center;
+     text-decoration: none;
+     margin: 5px 2px;
+     border-radius: 50%;
+   }
+
+   .fa:hover {
+     opacity: 0.5;
+     text-decoration: none;
+   }
+
+   .fa-facebook {
+     background: #3B5998;
+     color: white;
+     margin-top: 30px;
+   }
+
+   .fa-whatsapp {
+     background: #25d366;
+     color: white;
+   }
+  .fa-youtube {
+     background: red;
+     color: blue;
+   }
+
+   .fa-twitter {
+     background: #55ACEE;
+     color: white;
+   }
+
+   .fa-instagram {
+     background: #125688;
+     color: white;
+   }
+
+   p {
+     text-align: center;
+
+   }
+  </style>
+
+
+
+
+</head>
+
+<body>
+
+  <div class="bs-example">
+   <nav class="navbar navbar-expand-md bg-dark navbar-dark fixed-top">
+     <a href="index.html" class="navbar-brand">Salon Reservation</a>
+     <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+       <span class="navbar-toggler-icon"></span>
+     </button>
+
+     <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+       <div class="navbar-nav">
+         <a href="{% url 'home-page' %}" class="nav-item nav-link ">Home</a>
+         <a href="{% url 'system-login' 'ADMIN' %}" class="nav-item nav-link">Admin</a>
+         <a href="{% url 'system-login' 'MANAGER' %}" class="nav-item nav-link">SalonOwner</a>
+         <a href="{% url 'system-login' 'CUSTOMER' %}" class="nav-item nav-link ">Customer</a>
+
+
+       </div>
+
+       <div class="navbar-nav">
+         <a href="aboutus.html" class="nav-item nav-link">About Us</a>
+         <a href="contactus.html" class="nav-item nav-link">Contact Us</a>
+       </div>
+
+
+
+
+     </div>
+   </nav>
+  </div>
+  <br>
+  <br>
+  <br><br>
+
+{% if errors %}
+  <div class="alert alert-warning alert-dismissible fade show" role="alert">
+  {% for error in errors %}
+    <p class="text-orange-600">{{error}}</p>
+    {% endfor %}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+  {% endif %}
+  <form method="post">
+{% csrf_token %}
+    <div class="container register-form">
+      <div class="form">
+        <div class="note">
+          <p>LOGIN PAGE</p>
+        </div>
+
+        <div class="form-content">
+          <div class="row">
+            <div class="col-md-6">
+
+              <div class="form-group">
+
+                <input type="email" name="email" class="form-control" placeholder="E-mail" value="">
+              </div>
+
+            </div>
+            <div class="col-md-6">
+
+              <div class="form-group">
+                <input type="password" name="password" class="form-control" placeholder="password" value="">
+              </div>
+
+            </div>
+          </div>
+          <button type="submit" class="btnSubmit">Login</button>
+          {% if as == "CUSTOMER" %}
+          <div class="text-center">Do not have account? <a href="{% url 'create-customer-account' %}">Signup here</a></div>
+          {% endif %}
+
+          {% if as == "MANAGER" %}
+           <div class="text-center">Create your own saloon manager account, <a href="{% url 'register-saloon' %}">here!</a></div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+  </form>
+
+  <br><br><br>
+
+
+  <footer>
+
+    <p>
+      <a href="https://www.google.com/search?q=facebook+login&oq=facebook+login&aqs=chrome..69i57j69i64j69i60l4.3222j0j7&sourceid=chrome&ie=UTF-8" class="fa fa-facebook"></a>
+
+      <a href="https://www.instagram.com/?hl=en" class="fa fa-instagram"></a>
+      <a href="https://twitter.com/" class="fa fa-twitter"></a>
+      <a href="https://codecatalyst.udemy.com/organization/search/?src=ukw&q=sequence%20diagram" class="fa fa-youtube"></a>
+    </p>
+
+    <br>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 col-sm-12">
+          <div style="color:#ffffff;" class="wow fadeInUp footer-copyright">
+            <p>Made in Rwanda <br>
+              Copyright &copy; 2020 Adventist University Of Central Africa </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+
+</html>

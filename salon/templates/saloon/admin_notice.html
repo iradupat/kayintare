@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title>LazyCoder || elie</title>
+
+  <style media="screen">
+    a:link {
+      text-decoration: none;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Roboto", sans-serif;
+    }
+
+    header {
+      position: fixed;
+      background: #22242A;
+      padding: 20px;
+      width: 100%;
+
+      z-index: 1;
+    }
+
+    .left_area h3 {
+      color: #fff;
+      margin: 0px;
+      text-transform: uppercase;
+      font-size: 22px;
+      font-weight: 900;
+    }
+
+    .left_area span {
+      color: #19B3D3;
+    }
+
+    .logout_btn {
+      padding: 5px;
+      background: #19B3D3;
+      text-decoration: none;
+      float: right;
+      margin-top: -30px;
+      margin-right: 40px;
+      border-radius: 2px;
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+      transition: 0.5s;
+
+    }
+
+    .logout_btn:hover {
+      background: #0B87A6;
+    }
+
+    .sidebar {
+      background: #2f323a;
+      margin-top: 70px;
+      padding-top: 30px;
+      position: fixed;
+      left: 0;
+      width: 250px;
+      height: 100%;
+      transition: 0.5s;
+      transition-property: left;
+    }
+
+    .sidebar .profile_image {
+      width: 100px;
+      height: 100px;
+      border-radius: 100px;
+      margin-bottom: 10px;
+    }
+
+    .sidebar h4 {
+      color: #ccc;
+      margin-top: 0;
+      margin-bottom: 20px;
+    }
+
+    .sidebar a {
+      color: #fff;
+      display: block;
+      width: 100%;
+      line-height: 60px;
+      text-decoration: none;
+      padding-left: 40px;
+      box-sizing: border-box;
+      transition: 0.5s;
+
+    }
+
+    .sidebar a:hover {
+      background: #19B3D3;
+    }
+
+    .sidebar i {
+      padding-right: 10px;
+    }
+
+    label #sidebar_btn {
+      z-index: 1;
+      color: #fff;
+      position: fixed;
+      cursor: pointer;
+      left: 300px;
+      font-size: 20px;
+      margin: 5px 0;
+      transition: 0.5s;
+      transition-property: color;
+    }
+
+    label #sidebar_btn:hover {
+      color: #19B3D3;
+    }
+
+    #check:checked~.sidebar {
+      left: -190px;
+    }
+
+    #check:checked~.sidebar a span {
+      display: none;
+    }
+
+    #check:checked~.sidebar a {
+      font-size: 20px;
+      margin-left: 170px;
+      width: 80px;
+    }
+
+    .content {
+      margin-left: 250px;
+      background: url(background.png) no-repeat;
+      background-position: center;
+      background-size: cover;
+      height: 100vh;
+      transition: 0.5s;
+    }
+
+    #check:checked~.content {
+      margin-left: 60px;
+    }
+
+    #check {
+      display: none;
+    }
+  </style>
+
+  <style>
+      /*---------------------------------------
+     Social section
+  -----------------------------------------*/
+      footer {
+        padding: 0px 0px 0px 0px;
+        background-color: black;
+        margin: 0px;
+      }
+
+      .fa {
+        padding: 20px;
+        font-size: 23px;
+        width: 60px;
+        text-align: center;
+        text-decoration: none;
+        margin: 5px 2px;
+        border-radius: 50%;
+      }
+
+      .fa:hover {
+        opacity: 0.5;
+        text-decoration: none;
+      }
+
+      .fa-facebook {
+        background: #3B5998;
+        color: white;
+        margin-top: 30px;
+      }
+
+      .fa-whatsapp {
+        background: #25d366;
+        color: white;
+      }
+   .fa-youtube {
+        background: red;
+        color: blue;
+      }
+
+      .fa-twitter {
+        background: #55ACEE;
+        color: white;
+      }
+
+      .fa-instagram {
+        background: #125688;
+        color: white;
+      }
+
+      p {
+        text-align: center;
+
+      }
+    </style>
+    <style media="screen">
+    a:link {
+      text-decoration: none;
+    }
+
+    .note {
+      text-align: center;
+      height: 100px;
+      background: -webkit-linear-gradient(left, #0072ff, #8811c5);
+      color: #fff;
+      font-weight: bold;
+      line-height: 100px;
+    }
+
+    .form-content {
+      padding: 5%;
+      border: 2px solid #ced4da;
+      margin-bottom: 2%;
+    }
+
+    .form-control {
+      border-radius: 1.5rem;
+      height: 200px;
+    }
+
+    .btnSubmit {
+      border: none;
+      border-radius: 1.5rem;
+      padding: 1%;
+      width: 20%;
+      cursor: pointer;
+      background: #0062cc;
+      color: #fff;
+    }
+  </style>
+
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <link href="http://netdna.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="static/css/nav.css">
+    <link rel="stylesheet" href="static/css/index.css">
+    <link rel="stylesheet" href="static/css/cards.css">
+    <link rel="stylesheet" href="static/css/footer.css">
+
+
+</head>
+
+<body>
+
+  <input type="checkbox" id="check">
+  <!--header area start-->
+  <header>
+    <label for="check">
+      <i class="fas fa-bars" id="sidebar_btn"></i>
+    </label>
+    <div class="left_area">
+      <h3>Salon Reservation</h3>
+    </div>
+    <div class="right_area">
+      <a href="#" class="logout_btn">Logout</a>
+    </div>
+  </header>
+  <!--header area end-->
+  <!--sidebar start-->
+  <div class="sidebar">
+    <center>
+
+      <img src="assets/images/admin.png'" class="profile_image" alt="Admin">
+      <h4>User First_Name</h4>
+
+    </center>
+
+    <a href="admin_dashboard.html"><i class="fas fa-desktop"></i><span>Dashboard</span></a>
+    <a href="admin_salonOwner.html"><i class="fas fa-chalkboard-teacher"></i><span>Salon</span></a>
+    <a href="admin_customer.html"><i class="fas fa-user-graduate"></i><span>Customer</span></a>
+    <a href="admin_notice.html"><i class="fas fa-bullhorn"></i><span>Notice</span></a>
+
+  </div>
+  <!--sidebar end-->
+
+
+  <!--content start-->
+  <div class="content">
+    <br><br><br><br><br>
+
+    <!------ notice page for  by admin ---------->
+    <form method="post">
+      <div class="container register-form">
+        <div class="form">
+          <div class="note">
+            <p>Announce Something</p>
+          </div>
+
+          <div class="form-content">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <input type="textarea" name="message" class="form-control" placeholder="Write Your Message Here" value="">
+                </div>
+                <div class="form-group">
+                  <input type="hidden" class="form-control" placeholder="Your Name" name="" value="">
+                </div>
+              </div>
+
+            </div>
+            <button type="submit" class="btnSubmit">Submit</button>
+          </div>
+        </div>
+      </div>
+
+    </form>
+
+    <br><br><br>
+    <!--{% include "salon/footer.html" %}-->
+    <footer>
+
+      <p>
+        <a href="https://www.google.com/search?q=facebook+login&oq=facebook+login&aqs=chrome..69i57j69i64j69i60l4.3222j0j7&sourceid=chrome&ie=UTF-8" class="fa fa-facebook"></a>
+      <!--  <a href="https://web.whatsapp.com/" class="fa fa-whatsapp"></a>-->
+        <a href="https://www.instagram.com/?hl=en" class="fa fa-instagram"></a>
+        <a href="https://twitter.com/" class="fa fa-twitter"></a>
+        <a href="https://codecatalyst.udemy.com/organization/search/?src=ukw&q=sequence%20diagram" class="fa fa-youtube"></a>
+      </p>
+
+      <br>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12 col-sm-12">
+            <div style="color:#ffffff;" class="wow fadeInUp footer-copyright">
+              <p>Made in Rwanda <br>
+                Copyright &copy; 2020 Adventist University Of Central Africa </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+  <!--content end-->
+  <!--
+      written By : elie kayitare
+
+      -->
+</body>
+
+</html>
