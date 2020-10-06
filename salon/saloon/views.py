@@ -15,7 +15,7 @@ from django.contrib.auth import authenticate, login
 import uuid
 from django.contrib import messages
 import os
-from datetime import date
+from datetime import datetime
 from .Serializer import serialize_style
 from salon.settings import BASE_DIR
 # Create your views here.
@@ -72,7 +72,6 @@ class CreateManagerAccount(View):
                                           )
                     messages.success(request, 'Your password is'+password, )
                     return redirect('saloon-dashboard')
-                    # return render(request, 'saloon/salonOwner_dashboard.html', {"saloon": saloon, "password": password})
                 else:
                     return redirect('home-page')
             else:
@@ -165,7 +164,6 @@ class DisplayServices(View, LoginRequiredMixin):
             if saloons.exists():
                 saloon = saloons.first()
                 services = SaloonService.objects.filter(saloon=saloon)
-                print(services)
                 return render(request, 'saloon/salon_services.html', {"services": services, "isClient": False})
             else:
                 messages.error(request, 'You can not access this page')
@@ -197,9 +195,6 @@ class CreateService(View, LoginRequiredMixin):
                 name = request.POST.get('name')
                 price = request.POST.get('price')
                 SaloonService.objects.create(saloon=saloon, name=name, price=price)
-                # services = SaloonService.objects.filter(saloon=saloon)
-                # print(services)
-                # return render(request, 'saloon/salon_services.html', {"services": services})
                 messages.success(request, 'Create successfully')
                 return redirect('services-view')
             else:
@@ -388,7 +383,7 @@ class MakeAppointment(View, LoginRequiredMixin):
             style = Style.objects.get(id=request.POST.get('style'))
             time = request.POST.get('time')
             date = request.POST.get('date')
-            date_time = date()
+            # date_time = datetime.date(date.)
             comment = request.POST.get('comment')
             Appointment.objects.create(saloon=saloon, style=style, client=client, comment=comment, time=time)
             messages.success(request, 'Appointment sent to the saloon successfully ')

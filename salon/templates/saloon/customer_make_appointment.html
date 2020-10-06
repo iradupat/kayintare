@@ -1292,7 +1292,7 @@ JotForm.paymentExtrasOnTheFly([null,null,null,null,null,{"name":"whatServices","
   <div class="content">
     <br><br><br><br><br>
 
-    <form class="jotform-form" method="post">
+    <form id="form" class="jotform-form" method="post">
 
   <div role="main" class="form-all">
     <ul class="form-section page-section">
@@ -1309,187 +1309,7 @@ JotForm.paymentExtrasOnTheFly([null,null,null,null,null,{"name":"whatServices","
         </div>
       </li>
 
-<!--      <li class="form-line jf-required" data-type="control_phone" id="id_9">-->
-<!--        <label class="form-label form-label-top form-label-auto" id="label_9" for="input_9_area">-->
-<!--          Saloon-->
-<!--          <span class="form-required">-->
-<!--            *-->
-<!--          </span>-->
-<!--        </label>-->
-<!--        <div id="cid_9" class="form-input-wide jf-required">-->
-<!--          <div data-wrapper-react="true">-->
-<!--            <select class="custom-select">-->
-<!--              <option selected>Open this select menu</option>-->
-<!--              <option value="1">One</option>-->
-<!--              <option value="2">Two</option>-->
-<!--              <option value="3">Three</option>-->
-<!--            </select>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </li>-->
-<!--      <li class="form-line jf-required" data-type="control_phone" id="id_9">-->
-<!--        <label class="form-label form-label-top form-label-auto" id="label_9" for="input_9_area">-->
-<!--          Style-->
-<!--          <span class="form-required">-->
-<!--            *-->
-<!--          </span>-->
-<!--        </label>-->
-<!--        <div id="cid_9" class="form-input-wide jf-required">-->
-<!--          <div data-wrapper-react="true">-->
-<!--            <select class="custom-select">-->
-<!--              <option selected>Open this select menu</option>-->
-<!--              <option value="1">One</option>-->
-<!--              <option value="2">Two</option>-->
-<!--              <option value="3">Three</option>-->
-<!--            </select>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </li>-->
-<!--      <li class="form-line jf-required" data-type="control_email" id="id_8">-->
-<!--        <label class="form-label form-label-top form-label-auto" id="label_8" for="input_8">-->
-<!--          E-mail-->
-<!--          <span class="form-required">-->
-<!--            *-->
-<!--          </span>-->
-<!--        </label>-->
-<!--        <div id="cid_8" class="form-input-wide jf-required">-->
-<!--          <input type="email" id="input_8" name="q8_email8" class="form-textbox validate[required, Email]" size="20" value="" placeholder="ex: myname@example.com" data-component="email" aria-labelledby="label_8" required="" />-->
-<!--        </div>-->
-<!--      </li>-->
-<!--      <li class="form-line jf-required" data-type="control_address" id="id_11">-->
-<!--        <label class="form-label form-label-top" id="label_11" for="input_11undefined">-->
-<!--          Address-->
-<!--          <span class="form-required">-->
-<!--            *-->
-<!--          </span>-->
-<!--        </label>-->
-<!--        <div id="cid_11" class="form-input-wide jf-required">-->
-<!--          <div summary="" class="form-address-table jsTest-addressField">-->
-<!--            <div class="form-address-line-wrapper jsTest-address-line-wrapperField">-->
-<!--              <span class="form-address-line form-address-street-line jsTest-address-lineField">-->
-<!--                <span class="form-sub-label-container " style="vertical-align:top">-->
-<!--                  <input type="text" id="input_11_addr_line1" name="q11_address11[addr_line1]" class="form-textbox validate[required] form-address-line" value="" data-component="address_line_1" aria-labelledby="label_11 sublabel_11_addr_line1" />-->
-<!--                  <label class="form-sub-label" for="input_11_addr_line1" id="sublabel_11_addr_line1" style="min-height:13px" aria-hidden="false"> Street Address </label>-->
-<!--                </span>-->
-<!--              </span>-->
-<!--            </div>-->
-<!--            <div class="form-address-line-wrapper jsTest-address-line-wrapperField">-->
-<!--              <span class="form-address-line form-address-street-line jsTest-address-lineField">-->
-<!--                <span class="form-sub-label-container " style="vertical-align:top">-->
-<!--                  <input type="text" id="input_11_addr_line2" name="q11_address11[addr_line2]" class="form-textbox form-address-line" value="" data-component="address_line_2" aria-labelledby="label_11 sublabel_11_addr_line2" />-->
-<!--                  <label class="form-sub-label" for="input_11_addr_line2" id="sublabel_11_addr_line2" style="min-height:13px" aria-hidden="false"> Street Address Line 2 </label>-->
-<!--                </span>-->
-<!--              </span>-->
-<!--            </div>-->
-<!--            <div class="form-address-line-wrapper jsTest-address-line-wrapperField">-->
-<!--              <span class="form-address-line form-address-city-line jsTest-address-lineField ">-->
-<!--                <span class="form-sub-label-container " style="vertical-align:top">-->
-<!--                  <input type="text" id="input_11_city" name="q11_address11[city]" class="form-textbox validate[required] form-address-city" value="" data-component="city" aria-labelledby="label_11 sublabel_11_city" />-->
-<!--                  <label class="form-sub-label" for="input_11_city" id="sublabel_11_city" style="min-height:13px" aria-hidden="false"> City </label>-->
-<!--                </span>-->
-<!--              </span>-->
-<!--              <span class="form-address-line form-address-state-line jsTest-address-lineField ">-->
-<!--                <span class="form-sub-label-container " style="vertical-align:top">-->
-<!--                  <input type="text" id="input_11_state" name="q11_address11[state]" class="form-textbox validate[required] form-address-state" value="" data-component="state" aria-labelledby="label_11 sublabel_11_state" />-->
-<!--                  <label class="form-sub-label" for="input_11_state" id="sublabel_11_state" style="min-height:13px" aria-hidden="false"> State / Province </label>-->
-<!--                </span>-->
-<!--              </span>-->
-<!--            </div>-->
-<!--            <div class="form-address-line-wrapper jsTest-address-line-wrapperField">-->
-<!--              <span class="form-address-line form-address-zip-line jsTest-address-lineField ">-->
-<!--                <span class="form-sub-label-container " style="vertical-align:top">-->
-<!--                  <input type="text" id="input_11_postal" name="q11_address11[postal]" class="form-textbox form-address-postal" value="" data-component="zip" aria-labelledby="label_11 sublabel_11_postal" />-->
-<!--                  <label class="form-sub-label" for="input_11_postal" id="sublabel_11_postal" style="min-height:13px" aria-hidden="false"> Postal / Zip Code </label>-->
-<!--                </span>-->
-<!--              </span>-->
-<!--              <span class="form-address-line form-address-country-line jsTest-address-lineField ">-->
-<!--                <span class="form-sub-label-container " style="vertical-align:top">-->
 
-<!--                  <label class="form-sub-label" for="input_11_country" id="sublabel_11_country" style="min-height:13px" aria-hidden="false"> Country </label>-->
-<!--                </span>-->
-<!--              </span>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </li>-->
-<!--      <li class="form-line jf-required" data-type="control_checkbox" id="id_13">-->
-<!--        <label class="form-label form-label-top" id="label_13" for="input_13">-->
-<!--          What days work best for you?-->
-<!--          <span class="form-required">-->
-<!--            *-->
-<!--          </span>-->
-<!--        </label>-->
-<!--        <div id="cid_13" class="form-input-wide jf-required">-->
-<!--          <div class="form-multiple-column" data-columncount="3" role="group" aria-labelledby="label_13" data-component="checkbox">-->
-<!--            <span class="form-checkbox-item">-->
-<!--              <span class="dragger-item">-->
-<!--              </span>-->
-<!--              <input type="checkbox" class="form-checkbox validate[required]" id="input_13_0" name="q13_whatDays[]" value="Monday" required="" />-->
-<!--              <label id="label_input_13_0" for="input_13_0"> Monday </label>-->
-<!--            </span>-->
-<!--            <span class="form-checkbox-item">-->
-<!--              <span class="dragger-item">-->
-<!--              </span>-->
-<!--              <input type="checkbox" class="form-checkbox validate[required]" id="input_13_1" name="q13_whatDays[]" value="Tuesday" required="" />-->
-<!--              <label id="label_input_13_1" for="input_13_1"> Tuesday </label>-->
-<!--            </span>-->
-<!--            <span class="form-checkbox-item">-->
-<!--              <span class="dragger-item">-->
-<!--              </span>-->
-<!--              <input type="checkbox" class="form-checkbox validate[required]" id="input_13_2" name="q13_whatDays[]" value="Wednesday" required="" />-->
-<!--              <label id="label_input_13_2" for="input_13_2"> Wednesday </label>-->
-<!--            </span>-->
-<!--            <span class="form-checkbox-item" style="clear:left">-->
-<!--              <span class="dragger-item">-->
-<!--              </span>-->
-<!--              <input type="checkbox" class="form-checkbox validate[required]" id="input_13_3" name="q13_whatDays[]" value="Thursday" required="" />-->
-<!--              <label id="label_input_13_3" for="input_13_3"> Thursday </label>-->
-<!--            </span>-->
-<!--            <span class="form-checkbox-item">-->
-<!--              <span class="dragger-item">-->
-<!--              </span>-->
-<!--              <input type="checkbox" class="form-checkbox validate[required]" id="input_13_4" name="q13_whatDays[]" value="Friday" required="" />-->
-<!--              <label id="label_input_13_4" for="input_13_4"> Friday </label>-->
-<!--            </span>-->
-<!--            <span class="form-checkbox-item">-->
-<!--              <span class="dragger-item">-->
-<!--              </span>-->
-<!--              <input type="checkbox" class="form-checkbox validate[required]" id="input_13_5" name="q13_whatDays[]" value="Saturday" required="" />-->
-<!--              <label id="label_input_13_5" for="input_13_5"> Saturday </label>-->
-<!--            </span>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </li>-->
-<!--      <li class="form-line jf-required" data-type="control_radio" id="id_12">-->
-<!--        <label class="form-label form-label-top" id="label_12" for="input_12">-->
-<!--          What time works best for you?-->
-<!--          <span class="form-required">-->
-<!--            *-->
-<!--          </span>-->
-<!--        </label>-->
-<!--        <div id="cid_12" class="form-input-wide jf-required">-->
-<!--          <div class="form-multiple-column" data-columncount="3" role="group" aria-labelledby="label_12" data-component="radio">-->
-<!--            <span class="form-radio-item">-->
-<!--              <span class="dragger-item">-->
-<!--              </span>-->
-<!--              <input type="radio" class="form-radio validate[required]" id="input_12_0" name="q12_whatTime" value="Morning" required="" />-->
-<!--              <label id="label_input_12_0" for="input_12_0"> Morning </label>-->
-<!--            </span>-->
-<!--            <span class="form-radio-item">-->
-<!--              <span class="dragger-item">-->
-<!--              </span>-->
-<!--              <input type="radio" class="form-radio validate[required]" id="input_12_1" name="q12_whatTime" value="Afternoon" required="" />-->
-<!--              <label id="label_input_12_1" for="input_12_1"> Afternoon </label>-->
-<!--            </span>-->
-<!--            <span class="form-radio-item">-->
-<!--              <span class="dragger-item">-->
-<!--              </span>-->
-<!--              <input type="radio" class="form-radio validate[required]" id="input_12_2" name="q12_whatTime" value="Evening" required="" />-->
-<!--              <label id="label_input_12_2" for="input_12_2"> Evening </label>-->
-<!--            </span>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </li>-->
       <li class="form-line allowTime" data-type="control_datetime" id="id_15">
         <label class="form-label form-label-top" id="label_15" for="month_15"> Any specific date/time? </label>
         <input type="date" id="date" name="date" class="form-control" />
@@ -1508,21 +1328,7 @@ JotForm.paymentExtrasOnTheFly([null,null,null,null,null,{"name":"whatServices","
             {% for service in services %}
               <option value="{{service.id}}"> {{service.name}} </option>
             {% endfor %}
-<!--            <option value="">  </option>-->
-<!--            <option value="Hair Cut &amp; Blow Dry"> Hair Cut &amp; Blow Dry </option>-->
-<!--            <option value="Shampoo &amp; Blow Dry"> Shampoo &amp; Blow Dry </option>-->
-<!--            <option value="Colour - Semi-Permanent"> Colour - Semi-Permanent </option>-->
-<!--            <option value="Colour - Permanent"> Colour - Permanent </option>-->
-<!--            <option value="Colour - Fashion"> Colour - Fashion </option>-->
-<!--            <option value="Colour - Bleach &amp; Toner"> Colour - Bleach &amp; Toner </option>-->
-<!--            <option value="High Lights - Partial"> High Lights - Partial </option>-->
-<!--            <option value="High Lights - Half"> High Lights - Half </option>-->
-<!--            <option value="High Lights - Full"> High Lights - Full </option>-->
-<!--            <option value="High Lights - Foils &amp; Colour"> High Lights - Foils &amp; Colour </option>-->
-<!--            <option value="Perm"> Perm </option>-->
-<!--            <option value="Hair Straightening"> Hair Straightening </option>-->
-<!--            <option value="Hair Relaxer"> Hair Relaxer </option>-->
-<!--            <option value="Other"> Other </option>-->
+
           </select>
         </div>
       </li>
@@ -1596,7 +1402,7 @@ JotForm.paymentExtrasOnTheFly([null,null,null,null,null,{"name":"whatServices","
       <li class="form-line" data-type="control_button" id="id_6">
         <div id="cid_6" class="form-input-wide">
           <div style="text-align:center" data-align="center" class="form-buttons-wrapper form-buttons-center   jsTest-button-wrapperField">
-            <button id="input_6" type="submit" class="form-submit-button submit-button jf-form-buttons jsTest-submitField" data-component="button" data-content="">
+            <button id="appointment_btn" type="button" class="form-submit-button submit-button jf-form-buttons jsTest-submitField" data-component="button" data-content="">
               Submit
             </button>
           </div>
@@ -1676,6 +1482,12 @@ for (var i = 0; i < all_spc.length; i++)
 </footer>
   </div>
   <!--content end-->
+
+<script>
+  document.getElementById('appointment_btn').addEventListener('click',()=>{
+    console.log(document.getElementById('form'))
+  })
+</script>
 
 </body>
 
