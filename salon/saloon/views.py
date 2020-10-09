@@ -1,6 +1,5 @@
 import json
-
-from django.contrib.auth.decorators import login_required
+from django.core.mail import send_mail as sm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.files.storage import FileSystemStorage
 from django.db.models import Q
@@ -15,13 +14,27 @@ from django.contrib.auth import authenticate, login
 import uuid
 from django.contrib import messages
 import os
-from datetime import date
 from .Serializer import serialize_style
-from salon.settings import BASE_DIR
+
+import datetime
 # Create your views here.
+# tools
+
+
+def make_date_time(date):
+    date_only = date.split(' ')[0]
+    hours = date.split(' ')[1]
+    year = date_only.split('/')[0]
+    month = date_only.split('/')[1]
+    day = date_only.split('/')[2]
+    hour = hours.split(':')[0]
+    minuets = hours.split(':')[1]
+    final_date = datetime.datetime(int(year), int(month), int(day), int(hour), int(minuets))
+    return final_date
 
 
 def home_page(request, *args, **kwargs):
+
     return render(request, 'saloon/index.html')
 
 
@@ -38,7 +51,15 @@ class CustomerDashboard(View, LoginRequiredMixin):
         customer = ClientAccount.objects.get(owner=request.user)
         notifications = Notification.objects.filter(destination=request.user, seen=False)
         Notification.objects.filter(destination=request.user, seen=False).update(seen=True)
-        return render(request, 'saloon/customer_dashboard.html', {"customer": customer, "notifications": notifications})
+        appointments = Appointment.objects.filter(client=customer, deleted=False, approved=True, seen=False)
+        badge = 0
+        for appointment in appointments:
+            appointment.seen = True
+            if (datetime.datetime.now().timestamp() * 1000) < (appointment.time.timestamp() * 1000):
+                badge = badge + 1
+            appointment.save()
+        return render(request, 'saloon/customer_dashboard.html',
+                      {"customer": customer, "notifications": notifications, "appointment_badge": badge})
 
 
 class CreateManagerAccount(View):
@@ -50,9 +71,11 @@ class CreateManagerAccount(View):
         password = uuid.uuid4().hex[:6].upper()
 
         try:
-            print(request.POST)
             if form.is_valid():
-
+                message = 'Welcome to Saloon and Hair style Finder and Reservation System\n Your username is ' \
+                          '' + form.cleaned_data["email"] + ' Your password is ' \
+                        '' + password + ' \nPlease wait patiently for the approval.\n' \
+                        'You can now log in to http://127.0.0.1:8000/login/customer/MANAGER'
                 CustomUser.objects.create_user(email=form.cleaned_data.get('email'),
                                                password=password,
                                                first_name=form.cleaned_data.get("first_name"),
@@ -70,9 +93,17 @@ class CreateManagerAccount(View):
                                           opening_hours=form.cleaned_data.get('opening_hours'),
                                           closing_hours=form.cleaned_data.get('closing_hours'),
                                           )
-                    messages.success(request, 'Your password is'+password, )
+                    messages.success(request, 'Your password is '+password+'. A welcome message was sent to your email.')
+
+                    res = sm(
+                        subject='Welcome To S.H.F.R.S',
+                        message=message,
+                        from_email='kayitarelie20657@gmail.com',
+                        recipient_list=[form.cleaned_data["email"], ],
+                        fail_silently=False,
+                    )
+
                     return redirect('saloon-dashboard')
-                    # return render(request, 'saloon/salonOwner_dashboard.html', {"saloon": saloon, "password": password})
                 else:
                     return redirect('home-page')
             else:
@@ -107,9 +138,6 @@ class CreateCustomerAccount(View):
                                   "errors": ["can not create this account, use other credentials pleas and try again"]
                               })
             if user is not None:
-                # user.phone = data.cleaned_data.get("phone")
-                # user.gender = data.cleaned_data.get("gender")
-                # user.date_of_birth = data.cleaned_data.get("date_of_birth"),
 
                 ClientAccount.objects.create(owner=user)
                 customer = ClientAccount.objects.get(owner=user)
@@ -133,12 +161,15 @@ class LoginView(View):
         try:
             if form.is_valid():
                 user = authenticate(request, email=form.cleaned_data["email"], password=form.cleaned_data["password"])
-                print(user)
+
                 if user is not None:
                     login(request, user)
                 else:
                     return render(request, 'saloon/customerlogin.html',
                                   {"errors": ["can not find user with the provided credentials"]})
+
+                if user.is_superuser:
+                    return redirect('/admin/')
 
                 if Saloon.objects.filter(owner=user).exists():
                     # manager = Saloon.objects.get(owner=user)
@@ -150,6 +181,8 @@ class LoginView(View):
                     return redirect('customer-dashboard')
                 if ManagerAccount.objects.filter(owner=user).exists():
                     return render(request, '')
+
+
             else:
                 print(form.errors)
                 return render(request, 'saloon/customerlogin.html', {"errors": form.errors})
@@ -277,6 +310,7 @@ class StylesPictures(View, LoginRequiredMixin):
 
             saloons = Saloon.objects.filter(owner=request.user)
             if saloons.exists():
+                saloon = saloons.first()
                 style = Style.objects.get(id=style_id)
                 # print(request.FILES)
                 file = request.FILES.get('image')
@@ -287,7 +321,8 @@ class StylesPictures(View, LoginRequiredMixin):
                 uploaded_file_url = fs.url(filename)
                 File.objects.create(url=uploaded_file_url, style=style, name="SALOON STYLE")
                 pictures = File.objects.filter(style=style)
-                return render(request, 'saloon/style_pictures.html', {"pictures": pictures})
+                return render(request, 'saloon/style_pictures.html', {
+                    "pictures": pictures, "isClient": False, "saloon": saloon})
             else:
                 messages.error(request, 'Can not access this page')
                 return redirect('home-page')
@@ -383,15 +418,14 @@ class MakeAppointment(View, LoginRequiredMixin):
 
     def post(self, request, saloon_id):
         try:
+            date = request.POST.get('date')
+            time = make_date_time(date)
             client = ClientAccount.objects.get(owner=request.user)
             saloon = Saloon.objects.get(id=saloon_id)
             style = Style.objects.get(id=request.POST.get('style'))
-            time = request.POST.get('time')
-            date = request.POST.get('date')
-            date_time = date()
             comment = request.POST.get('comment')
             Appointment.objects.create(saloon=saloon, style=style, client=client, comment=comment, time=time)
-            messages.success(request, 'Appointment sent to the saloon successfully ')
+            messages.success(request, 'Appointment sent to the saloon ; please wait as the saloon responds!')
             return redirect('customer-dashboard')
         except Exception as e:
             messages.error(request, str(e))
@@ -410,3 +444,75 @@ class GetStylesFromServiceAjax(View, LoginRequiredMixin):
         except Exception as e:
             print(str(e))
             return JsonResponse({"error": str(e)}, status=500)
+
+
+class ListAppointments(View, LoginRequiredMixin):
+    def get(self, request):
+        try:
+            saloon = Saloon.objects.get(owner=request.user)
+        except:
+            messages.error(request, 'You can not access this page')
+            return redirect('home-page')
+
+        appointments = Appointment.objects.filter(approved=False, saloon=saloon, deleted=False)
+        approved_appointments = Appointment.objects.filter(approved=True, saloon=saloon, deleted=False)
+        return render(request, 'saloon/salonOwner_view_appointments.html',
+                      {"approved_appointments":  approved_appointments,
+                       "appointments": appointments})
+
+    def post(self, request, appointment_id, accepted):
+        try:
+            saloon = Saloon.objects.get(owner=request.user)
+        except:
+            messages.error(request, 'You can not access this page')
+            return redirect('home-page')
+
+        appointment = Appointment.objects.get(id=appointment_id)
+        if accepted == "accepted":
+            appointment.approved = True
+        else:
+            appointment.deleted = True
+        appointment.save()
+        return redirect('saloon-appointments')
+
+
+class AppointmentDetails(View, LoginRequiredMixin):
+    def get(self, request, appointment_id):
+        try:
+            saloon = Saloon.objects.get(owner=request.user)
+        except:
+            messages.error(request, 'You can not access this page')
+            return redirect('home-page')
+
+        try:
+            appointment = Appointment.objects.get(id=appointment_id)
+            in_past = ((datetime.datetime.now().timestamp() * 1000) > (appointment.time.timestamp() * 1000))
+            return render(request, 'saloon/saloon_appointment_details.html',
+                          {"appointment": appointment, "in_past": in_past})
+        except Exception as e:
+            messages.error(request, str(e))
+            return redirect('home-page')
+
+
+class CustomerAppointments(View, LoginRequiredMixin):
+    def get(self, request):
+        try:
+            customer = ClientAccount.objects.get(owner=request.user)
+        except:
+            messages.error(request, 'Can not access this page')
+            return redirect('home-page')
+
+        appointments = Appointment.objects.filter(client=customer)
+        return render(request, 'saloon/manage_appointment.html', {"appointments": appointments})
+
+
+class CustomerAppointmentDetails(View, LoginRequiredMixin):
+    def get(self, request, appointment_id):
+        try:
+            customer = ClientAccount.objects.get(owner=request.user)
+        except:
+            messages.error(request, 'Can not access this page')
+            return redirect('home-page')
+
+        appointment = Appointment.objects.get(id=appointment_id)
+        return render(request, 'saloon/customer_change_appointment.html', {"appointment": appointment})

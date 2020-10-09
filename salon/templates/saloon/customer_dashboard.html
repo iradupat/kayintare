@@ -399,7 +399,7 @@
 
 
   <div class="content">
-    <br><br><br><br><br>
+<!--    <br><br><br><br><br>-->
 
 
 <div class="container">
@@ -438,9 +438,13 @@
       <div class="col-md-4 col-xl-3">
         <div class="card bg-c-green order-card">
           <div class="card-block">
-            <h6 class="m-b-20">Appointments</h6>
+            <h6 class="m-b-20">Appointments
+              {% if appointment_badge > 0 %}
+            <span class="badge badge-light">{{appointment_badge}}</span>
+              {% endif %}
+            </h6>
             <h2 class="text-right"><i class="fas fa-mobile-alt f-left"></i></h2>
-            <a style="margin-left:12px;" href="">Your appointments</a>
+            <a style="margin-left:12px;" href="{% url 'customer-appointments' %}">Your appointments</a>
           </div>
         </div>
       </div>

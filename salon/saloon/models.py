@@ -57,13 +57,22 @@ class CustomUser(AbstractUser):
     REQUIRED_FIELDS = []
     objects = UserManager()
 
+    def __str__(self):
+        return self.first_name+' '+self.last_name
+
 
 class ManagerAccount(models.Model):
     owner = models.OneToOneField(CustomUser, on_delete=models.CASCADE, null=True)
 
+    def __str__(self):
+        return self.owner
+
 
 class ClientAccount(models.Model):
     owner = models.OneToOneField(CustomUser, on_delete=models.CASCADE, null=False)
+
+    def __str__(self):
+        return self.owner.first_name+" "+self.owner.last_name
 
 
 class Saloon(models.Model):
@@ -83,22 +92,34 @@ class Saloon(models.Model):
         else:
             return "No ratings"
 
+    def __str__(self):
+        return self.saloon_name
+
 
 class SaloonService(models.Model):
     name = models.CharField(max_length=100, null=False)
     price = models.IntegerField(default=0)
     saloon = models.ForeignKey(Saloon, null=False, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.name
+
 
 class Style(models.Model):
     name = models.CharField(max_length=100, null=False)
     service = models.ForeignKey(SaloonService, on_delete=models.CASCADE, null=False)
+
+    def __str__(self):
+        return self.name
 
 
 class File(models.Model):
     url = models.CharField(max_length=1000, null=False)
     name = models.CharField(max_length=40, null=True)
     style = models.ForeignKey(Style, on_delete=models.CASCADE, null=False)
+
+    def __str__(self):
+        return self.url
 
 
 RATES = [
@@ -116,6 +137,9 @@ class Rating(models.Model):
     saloon = models.ForeignKey(Saloon, on_delete=models.SET_NULL, null=True)
     client = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
 
+    def __str__(self):
+        return self.client.first_name+' rated '+self.saloon.saloon_name+' saloon with  a  '+str(self.rate)+'/5'
+
 
 class Notification(models.Model):
     origin = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, related_name="origins")
@@ -123,6 +147,9 @@ class Notification(models.Model):
     destination = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, related_name="destinations")
     seen = models.BooleanField(default=False)
     date = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.origin+' to '+self.destination
 
 
 REPORT_TYPE = [
@@ -137,6 +164,9 @@ class Report(models.Model):
     message = models.CharField(max_length=100, default='')
     saloon = models.ForeignKey(Saloon, on_delete=models.CASCADE, null=True)
 
+    def __str__(self):
+        return self.client+' reported '+self.saloon+' saloon for having '+self.report_type
+
 
 class Appointment(models.Model):
     saloon = models.ForeignKey(Saloon, on_delete=models.CASCADE)
@@ -145,6 +175,9 @@ class Appointment(models.Model):
     time = models.DateTimeField()
     approved = models.BooleanField(default=False)
     comment = models.CharField(max_length=200, default="")
-
+    deleted = models.BooleanField(default=False)
+    seen = models.BooleanField(default=False)
+    # def __str__(self):
+    #     return self.client.owner.first_name+" to "+self.saloon.saloon_name+' saloon at '+str(self.time)
 
 

@@ -8,6 +8,56 @@
   <title>LazyCoder || elie</title>
 
   <style media="screen">
+
+  .rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center
+}
+
+.rating>input {
+    display: none
+}
+
+.rating>label {
+    position: relative;
+    width: 1em;
+    font-size: 6vw;
+    color: #FFD600;
+    cursor: pointer
+}
+
+.rating>label::before {
+    content: "\2605";
+    position: absolute;
+    opacity: 0
+}
+
+.rating>label:hover:before,
+.rating>label:hover~label:before {
+    opacity: 1 !important
+}
+
+.rating>input:checked~label:before {
+    opacity: 1
+}
+
+.rating:hover>input:checked~label:before {
+    opacity: 0.4
+}
+
+@media only screen and (max-width: 600px) {
+    h1 {
+        font-size: 14px
+    }
+
+    p {
+        font-size: 12px
+    }
+}
+
+
+
     a:link {
       text-decoration: none;
     }
@@ -631,9 +681,17 @@ th {
           </form>
           {% else %}
           <a href="{% url 'make-appointment' saloon.id %}" class="btn btn-primary">Make Appointment</a>
+          <form action="" style="display: flex; flex-direction: column; align-items: center; width:100%; margin-top:20px; border-top: 2px solid black;" >
+            <h3>What is your review ?</h3>
+            <div class="rating"> <input type="radio" name="rating" value="5" id="5"><label for="5">☆</label> <input type="radio" name="rating" value="4" id="4"><label for="4">☆</label> <input type="radio" name="rating" value="3" id="3"><label for="3">☆</label> <input type="radio" name="rating" value="2" id="2"><label for="2">☆</label> <input type="radio" name="rating" value="1" id="1"><label for="1">☆</label>
+            </div>
+          <input placeholder="Add your comment" style="width:50%;" type="text" name="comment" class="form-control">
+              <button class="btn btn-primary" style="width:50%; margin-top:10px;"  type="button">Submit review</button>
+              </form>
           {% endif %}
 <!--    <a href="popular_salons.html" style="color: grey">Back TO Salons</a>-->
       </div>
+
   </h5>
     </div> 
 
