@@ -11,15 +11,25 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="static/css/nav.css">
     <link rel="stylesheet" href="static/css/index.css">
     <link rel="stylesheet" href="static/css/cards.css">
     <link rel="stylesheet" href="static/css/footer.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
 
   <title></title>
 
 
   <style media="screen">
+    .stars{
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+    }
+    .checked {
+        color: orange;
+      }
     .jumbotron {
       margin-top: 0px;
       margin-bottom: 0px;
@@ -237,16 +247,111 @@
 
 
 <div class="grid-container">
+{% for saloon in  saloons %}
     <div class="grid-item">
       <div class="card">
-        <img src="assets/images/admin.png" alt="John" style="width:100%">
-        <p class="title">ADMIN</p>
-        <p><button><a href="adminclick.html">View</a></button></p>
+      <h2>{{saloon.saloon.saloon_name}} Saloon</h2>
+      <p>Customer's reviews</p>
+      <div class="stars">
+        {% if saloon.rating < 1 %}
+        <span class="fa fa-star "></span>
+        <span class="fa fa-star "></span>
+        <span class="fa fa-star "></span>
+        <span class="fa fa-star"></span>
+        <span class="fa fa-star"></span>
+        {% elif saloon.rating == 1 %}
+        <span class="fa fa-star checked"></span>
+        <span class="fa fa-star "></span>
+        <span class="fa fa-star "></span>
+        <span class="fa fa-star"></span>
+        <span class="fa fa-star"></span>
+        {% elif saloon.rating == 2 %}
+        <span class="fa fa-star checked"></span>
+        <span class="fa fa-star checked"></span>
+        <span class="fa fa-star "></span>
+        <span class="fa fa-star"></span>
+        <span class="fa fa-star"></span>
+        {% elif saloon.rating == 3 %}
+        <span class="fa fa-star checked"></span>
+        <span class="fa fa-star checked"></span>
+        <span class="fa fa-star checked"></span>
+        <span class="fa fa-star"></span>
+        <span class="fa fa-star"></span>
+        {% elif saloon.rating == 4 %}
+        <span class="fa fa-star checked"></span>
+        <span class="fa fa-star checked"></span>
+        <span class="fa fa-star checked"></span>
+        <span class="fa fa-star checked"></span>
+        <span class="fa fa-star"></span>
+        {% elif saloon.rating == 5 %}
+        <span class="fa fa-star checked"></span>
+        <span class="fa fa-star checked"></span>
+        <span class="fa fa-star checked"></span>
+        <span class="fa fa-star checked"></span>
+        <span class="fa fa-star checked"></span>
+        {% endif %}
+        <!-- <span class="fa fa-star checked"></span>
+      <span class="fa fa-star checked"></span>
+      <span class="fa fa-star checked"></span>
+      <span class="fa fa-star"></span>
+      <span class="fa fa-star"></span> -->
+
       </div>
+      
+        {% comment %} <img src="https://cdn3.iconfinder.com/data/icons/beauty-salon/231/beauty-services-002-512.png" alt="" style="width:100%"> {% endcomment %}
+        <i class="material-icons">call</i> 
+        <p class="title">  {{saloon.saloon.owner.phone}}</p>
+        <i class="material-icons">email</i> <p class="title">
+        <p class="title"> Email: {{saloon.saloon.owner.email}}</p>
+        <i class="material-icons">location_city</i> <p class="title">
+        <p class="title"> Address: {{saloon.saloon.address}}</p>
+        <p><button  type="button" onclick="show_modal({{saloon.saloon.id}})"  ><a >ASK FOR RESERVATION</a></button></p>
+      </div>
+      
 
+
+          <!-- model -->
+<div class="modal fade" id="myModal" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+  <div class="modal-dialog">
+    <form action="{% url 'quick-auth' %}" method="POST">
+      {% csrf_token %}
+      <input type="text" name="saloon_id" id="saloon_id" hidden>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 style="width: 90%;" class="modal-title" id="exampleModalLabel">Login First</h5>
+        <button type="button" style="width:10%;" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      
+        <div class="form-group">
+          <label for="exampleFormControlInput1">Email address</label>
+          <input type="email" class="form-control" name="email" placeholder="name@example.com">
+        </div>
+
+        <div class="form-group">
+          <label for="exampleFormControlInput1">Password</label>
+          <input type="password" class="form-control" id="password" name="password">
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button id="login-button" type="submit" class="btn btn-primary">Login</button>
+      </div>
     </div>
+    </form>
 
-    <div class="grid-item">
+  </div>
+</div>
+
+
+  
+    </div>
+{% endfor %}
+     <!-- <div class="grid-item">
       <div class="card">
         <img src="assets/images/salonOwner.png" alt="John" style="width:100%">
         <p class="title">salonOwner</p>
@@ -258,9 +363,9 @@
       <div class="card">
         <img src="assets/images/customer.png" alt="John" style="width:100%">
         <p class="title">CUSTOMER</p>
-        <p><button><a href="">View</a></button></p>
+        <p><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#staticBackdrop"><a href="">View</a></button></p>
       </div>
-    </div>
+    </div>  -->
 
   </div>
 
@@ -269,6 +374,10 @@
   <br>
   <br>
   <br>
+
+
+
+  
 
 
 <footer>
@@ -293,7 +402,13 @@
     </div>
   </div>
 </footer>
+<script>
+ const show_modal = (saloon_id)=>{
+    document.getElementById('saloon_id').value=saloon_id
+    $('#myModal').modal({})
+ }
 
+ 
+</script>
 </body>
-
 </html>

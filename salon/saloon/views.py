@@ -34,15 +34,26 @@ def make_date_time(date):
 
 
 def home_page(request, *args, **kwargs):
+    ratings = Rating.objects.filter(rate__gte=3)
+    saloons = []
+    if ratings.exists():
+        for rating in ratings:
+            saloons.append({"saloon": rating.saloon, "rating": int(rating.rate)})
+    else:
+        saloons.extend(Saloon.objects.all()[:5])
+    # saloons = list(dict.fromkeys(saloons))
 
-    return render(request, 'saloon/index.html')
+    return render(request, 'saloon/index.html', {"saloons": saloons})
 
 
 class ManagerDashboard(View, LoginRequiredMixin):
     def get(self, request):
         saloon = Saloon.objects.get(owner=request.user)
         notifications = Notification.objects.filter(destination=request.user, seen=False)
-        Notification.objects.filter(destination=request.user, seen=False).update(seen=True)
+        # Notification.objects.filter(destination=request.user, seen=False).update(seen=True)
+        for notification in notifications:
+            notification.seen = True
+            notification.save()
         return render(request, 'saloon/salonOwner_dashboard.html', {"saloon": saloon, "notifications": notifications})
 
 
@@ -50,7 +61,10 @@ class CustomerDashboard(View, LoginRequiredMixin):
     def get(self, request):
         customer = ClientAccount.objects.get(owner=request.user)
         notifications = Notification.objects.filter(destination=request.user, seen=False)
-        Notification.objects.filter(destination=request.user, seen=False).update(seen=True)
+        for notification in notifications:
+            notification.seen = True
+            notification.save()
+        # Notification.objects.filter(destination=request.user, seen=False).update(seen=True)
         appointments = Appointment.objects.filter(client=customer, deleted=False, approved=True, seen=False)
         badge = 0
         for appointment in appointments:
@@ -169,7 +183,7 @@ class LoginView(View):
                                   {"errors": ["can not find user with the provided credentials"]})
 
                 if user.is_superuser:
-                    return redirect('/admin/')
+                    return redirect('announcement-board')
 
                 if Saloon.objects.filter(owner=user).exists():
                     # manager = Saloon.objects.get(owner=user)
@@ -179,9 +193,6 @@ class LoginView(View):
                     # customer = ClientAccount.objects.get(owner=user)
                     # return render(request, )
                     return redirect('customer-dashboard')
-                if ManagerAccount.objects.filter(owner=user).exists():
-                    return render(request, '')
-
 
             else:
                 print(form.errors)
@@ -289,18 +300,15 @@ class StylesPictures(View, LoginRequiredMixin):
     def get(self, request, style_id):
         try:
             saloons = Saloon.objects.filter(owner=request.user)
+            style = Style.objects.get(id=style_id)
+            saloon = style.service.saloon
+            pictures = File.objects.filter(style=style)
             if saloons.exists():
-                style = Style.objects.get(id=style_id)
-                pictures = File.objects.filter(style=style)
-
                 return render(request, 'saloon/style_pictures.html',
-                              {"pictures": pictures, "isClient": False})
+                              {"pictures": pictures, "isClient": False, "saloon": saloon, "style_id": style_id})
             else:
-                style = Style.objects.get(id=style_id)
-                pictures = File.objects.filter(style=style)
-                saloon = style.service.saloon
                 return render(request, 'saloon/style_pictures.html',
-                              {"pictures": pictures, "isClient": True, "saloon": saloon})
+                              {"pictures": pictures, "isClient": True, "saloon": saloon, "style_id": style_id})
         except Exception as e:
             messages.error(request, str(e))
             return redirect('home-page')
@@ -516,3 +524,87 @@ class CustomerAppointmentDetails(View, LoginRequiredMixin):
 
         appointment = Appointment.objects.get(id=appointment_id)
         return render(request, 'saloon/customer_change_appointment.html', {"appointment": appointment})
+
+
+class RateSaloon(View, LoginRequiredMixin):
+    def post(self, request, saloon_id, style_id):
+        try:
+            customer = ClientAccount.objects.get(owner=request.user)
+            saloon = Saloon.objects.get(id=saloon_id)
+        except:
+            return JsonResponse({"error": "You are not allowed to perform this action", "can_rate": False})
+
+        rating = request.POST.get('rating')
+        comment = request.POST.get('comment')
+
+        Rating.objects.create(rate=int(rating), review=comment, saloon=saloon, client=customer)
+        return redirect("style-pictures", style_id=style_id)
+
+
+class CheckRateSaloon(View, LoginRequiredMixin):
+    def get(self, request, saloon_id):
+        try:
+            customer = ClientAccount.objects.get(owner=request.user)
+            saloon = Saloon.objects.get(id=saloon_id)
+        except:
+            return JsonResponse({"error": "You are not allowed to perform this action", "can_rate": False})
+
+        rating = Rating.objects.filter(saloon=saloon, client=customer)
+        if rating.exists():
+            return JsonResponse({"can_rate": False})
+        else:
+            return JsonResponse({"can_rate": True})
+
+
+class QuickAuthentication(View):
+
+    def post(self, request):
+        try:
+            email = request.POST.get('email')
+            password = request.POST.get('password')
+            saloon_id = request.POST.get('saloon_id')
+            try:
+                user = authenticate(request, email=email, password=password)
+                login(request, user)
+            except:
+                messages.error(request, 'Not authenticated, try another email or password.')
+                return redirect('home-page')
+
+            if ClientAccount.objects.filter(owner=user):
+                return redirect('make-appointment', saloon_id=saloon_id)
+            else:
+                messages.error(request, 'Not a client? create your account first.')
+                return redirect("home-page")
+
+        except Exception as e:
+            messages.error(request, str(e))
+            return redirect('home-page')
+
+
+class AnnouncementBoard(View, LoginRequiredMixin):
+    def get(self, request):
+        return render(request, 'saloon/admin_home.html')
+
+    def post(self, request):
+        message = request.POST.get('message')
+        to = request.POST.get('whom')
+
+        if to == "SALOONS":
+            saloons = Saloon.objects.filter(approved=True)
+            if saloons.exists():
+                for saloon in saloons:
+                    Notification.objects.create(destination=saloon.owner, message=message, origin=request.user)
+                messages.success(request, 'Message sent successfully!')
+                return redirect('announcement-board')
+            else:
+                messages.success(request, 'No saloons found')
+                return redirect('announcement-board')
+        else:
+            clients = ClientAccount.objects.all()
+            print('=============================================0000000000000000================')
+            print(clients)
+            if len(clients)>0:
+                for client in clients:
+                    Notification.objects.create(destination=client.owner, message=message, origin=request.user)
+                    messages.success(request, 'There is no client account yet!')
+                    return redirect('announcement-board')

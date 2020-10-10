@@ -1275,7 +1275,7 @@ JotForm.paymentExtrasOnTheFly([null,null,null,null,null,{"name":"whatServices","
       <h3>Salon Reservation </h3>
     </div>
     <div class="right_area">
-      <a href="index.html" class="logout_btn">Logout</a>
+      <a href="{% url 'system-logout' %}" class="logout_btn">Logout</a>
     </div>
   </header>
 
@@ -1287,7 +1287,7 @@ JotForm.paymentExtrasOnTheFly([null,null,null,null,null,{"name":"whatServices","
 
     </center>
 
-   <a href="customer_dashboard.html"><i class="fas fa-desktop"></i><span>Dashboard</span></a>
+   <a href="}"><i class="fas fa-desktop"></i><span>Dashboard</span></a>
     <a href="manage_appointment.html"><i class="fas fa-desktop"></i><span>Manage Appointments</span></a>
     <a href="about_salons.html"><i class="fas fa-desktop"></i><span>About salons</span></a>
 
@@ -1304,7 +1304,7 @@ JotForm.paymentExtrasOnTheFly([null,null,null,null,null,{"name":"whatServices","
         <div class="form-header-group  header-normal">
           <div class="header-text httal htvam">
             <h2 id="header_10" class="form-header" data-component="header" style="color: blue;">
-             Customer  Appointment Request
+             Customer  Appointment Request to {{saloon.saloon_name}} Saloon
             </h2>
             <div id="subHeader_10" class="form-subHeader">
               Let us know how we can help transform your landscape!
@@ -1403,7 +1403,10 @@ for (var i = 0; i < all_spc.length; i++)
 </script> -->
 
       <script>
-            document.getElementById('service_id').addEventListener('change', async (e)=>{
+
+           
+            
+            const getStyles = async ()=>{
                let my_value = document.getElementById('service_id').value
                const response = await fetch("http://127.0.0.1:8000/ajax/styles/"+my_value, {
                   method:"GET",
@@ -1421,7 +1424,9 @@ for (var i = 0; i < all_spc.length; i++)
                 
                
               
-            })
+            }
+            document.getElementById('service_id').addEventListener('change', getStyles)
+            getStyles()
 
       </script>
 </form>

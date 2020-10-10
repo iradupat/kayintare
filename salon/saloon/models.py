@@ -135,10 +135,10 @@ class Rating(models.Model):
     rate = models.IntegerField(choices=RATES)
     review = models.CharField(null=True, max_length=200)
     saloon = models.ForeignKey(Saloon, on_delete=models.SET_NULL, null=True)
-    client = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
+    client = models.ForeignKey(ClientAccount, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
-        return self.client.first_name+' rated '+self.saloon.saloon_name+' saloon with  a  '+str(self.rate)+'/5'
+        return self.client.owner.first_name+' rated '+self.saloon.saloon_name+' saloon with  a  '+str(self.rate)+'/5'
 
 
 class Notification(models.Model):
@@ -149,7 +149,7 @@ class Notification(models.Model):
     date = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.origin+' to '+self.destination
+        return self.origin.email+' to '+self.destination.first_name
 
 
 REPORT_TYPE = [

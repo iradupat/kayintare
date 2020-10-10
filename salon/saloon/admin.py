@@ -10,9 +10,9 @@ class ManagerAccountAdmin(admin.ModelAdmin):
     list_display = ['owner']
 
 
-class NotificationAdmin(admin.ModelAdmin):
-    list_display = ['origin', 'destination', 'seen', 'date']
-    search_fields = ['date', 'origin__first_name', ' destination__first_name']
+# class NotificationAdmin(admin.ModelAdmin):
+#     list_display = ['origin', 'destination', 'seen', 'date']
+#     search_fields = ['date', 'origin__first_name', ' destination__first_name']
 
 
 class ClientAccountAdmin(admin.ModelAdmin):
@@ -43,7 +43,7 @@ class AppointMentAdmin(admin.ModelAdmin):
 admin.site.register(Appointment, AppointMentAdmin)
 admin.site.register(SaloonService, SaloonServiceAdmin)
 admin.site.register(ManagerAccount, ManagerAccountAdmin)
-admin.site.register(Notification, NotificationAdmin)
+admin.site.register(Notification)
 admin.site.register(ClientAccount, ClientAccountAdmin)
 admin.site.register(Saloon, SaloonAdmin)
 admin.site.register(Style, StyleAdmin)

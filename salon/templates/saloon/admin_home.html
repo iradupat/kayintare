@@ -603,9 +603,20 @@ JotForm.paymentExtrasOnTheFly([null,null,{"name":"submitForm","qid":"2","text":"
   <!--content start-->
   <div class="content">
     <br><br><br><br><br>
+    {% if messages %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+      {% for message in messages %}
+        <p>{{message}}</p>
+      {% endfor %}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    {% endif %}
 
    <!-- <h2 style="color: grey;text-align: center;">Below are the comments for customers</h2>-->
-   <form class="jotform-form" action="https://submit.jotform.com/submit/202605512245546/" method="post" name="form_202605512245546" id="202605512245546" accept-charset="utf-8" autocomplete="on">
+   <form class="jotform-form" action="{% url 'announcement-board' %}" method="post" >
+     {% csrf_token  %}
   <input type="hidden" name="formID" value="202605512245546" />
   <input type="hidden" id="JWTContainer" value="" />
   <input type="hidden" id="cardinalOrderNumber" value="" />
@@ -615,7 +626,7 @@ JotForm.paymentExtrasOnTheFly([null,null,{"name":"submitForm","qid":"2","text":"
         <div class="form-header-group  header-large">
           <div class="header-text httal htvam">
             <h1 id="header_10" class="form-header" data-component="header">
-              Fill Out Salon Style images
+              Announcement Board
             </h1>
             <div id="subHeader_10" class="form-subHeader">
               Please provide all required details to register Styles for your selected salon
@@ -626,19 +637,15 @@ JotForm.paymentExtrasOnTheFly([null,null,{"name":"submitForm","qid":"2","text":"
 
       <li class="form-line jf-required" data-type="control_dropdown" id="id_11">
         <label class="form-label form-label-top form-label-auto" id="label_11" for="input_11">
-           Service styles
+           TO WHOM YOU ANNOUNCE
           <span class="form-required">
             *
           </span>
         </label>
         <div id="cid_11" class="form-input-wide jf-required" data-layout="half">
-          <select class="form-dropdown validate[required]" id="input_11" name="services" style="width:310px" data-component="dropdown" required="" aria-labelledby="label_11">
-            <option value=""> Please Select </option>
-            <option value="Shop/Cafe"> Style 1 </option>
-            <option value="Lending"> Style 2 </option>
-            <option value="Store"> Style 3 </option>
-            <option value="Rentals"> Style 4 </option>
-            <option value="Others, please specify below."> Others, please specify below. </option>
+          <select class="form-dropdown validate[required]" id="input_11" name="whom" style="width:310px" data-component="dropdown" required="" aria-labelledby="label_11">
+            <option value="SALOONS"> SALOONS </option>
+            <option value="CLIENTS"> CLIENTS </option>
           </select>
         </div>
       </li>
@@ -656,31 +663,24 @@ JotForm.paymentExtrasOnTheFly([null,null,{"name":"submitForm","qid":"2","text":"
       </li>
       <li class="form-line jf-required" data-type="control_textbox" id="id_13">
         <label class="form-label form-label-top form-label-auto" id="label_13" for="input_13">
-          select Image
+          Message 
           <span class="form-required">
             *
           </span>
         </label>
-        <div id="cid_13" class="form-input-wide jf-required" data-layout="half">
-          <input type="file" id="myFile" name="filename" data-type="input-file" class="form-file validate[required]" style="width:310px" size="310" value="" placeholder=" " data-component="file" aria-labelledby="label_13" required="" />
-        </div>
-      </li>
-<!--
-      <li>
-        <form action="">
-  <input type="file" id="myFile" name="filename">
-  
-</form>
+       <textarea class="form-control" name="message" id="message" cols="30" rows="10">
 
+       </textarea>
       </li>
-    -->
-      
 
       <li class="form-line" data-type="control_button" id="id_2">
         <div id="cid_2" class="form-input-wide" data-layout="full">
           <div data-align="auto" class="form-buttons-wrapper form-buttons-auto   jsTest-button-wrapperField">
             <button id="input_2" type="submit" class="form-submit-button submit-button jf-form-buttons jsTest-submitField" data-component="button" data-content="">
-              <a href="add_style_images.html">Submit Registration</a>  
+              <a href="add_style_images.html">Send</a>
+            </button>
+            <button style="background-color: #22242A; border-color:#2f323a ;" type="button" class="form-submit-button submit-button jf-form-buttons jsTest-submitField" data-component="button" data-content="">
+              <a href="/admin/">Go to the admin board</a>
             </button>
           </div>
         </div>
@@ -711,7 +711,7 @@ for (var i = 0; i < all_spc.length; i++)
 
 
     <br><br><br>
-    <!--{% include "salon/footer.html" %}-->
+
       <footer>
 
   <p>

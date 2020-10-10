@@ -624,10 +624,13 @@ th {
       <h4>Customer First Name</h4>
 
     </center>
-
+{% if isClient == True %}
+    <a href="{% url 'customer-dashboard' %}"><i class="fas fa-desktop"></i><span>Dashboard</span></a>
+{% else %}
    <a href="{% url 'saloon-dashboard' %}"><i class="fas fa-desktop"></i><span>Dashboard</span></a>
-    <a href="manage_appointment.html"><i class="fas fa-desktop"></i><span>Manage Appointments</span></a>
-    <a href="about_salons.html"><i class="fas fa-desktop"></i><span>About salons</span></a>
+{% endif %}
+    <!-- <a href="manage_appointment.html"><i class="fas fa-desktop"></i><span>Manage Appointments</span></a>
+    <a href="about_salons.html"><i class="fas fa-desktop"></i><span>About salons</span></a> -->
 
   </div>
   <!--sidebar end-->
@@ -681,12 +684,13 @@ th {
           </form>
           {% else %}
           <a href="{% url 'make-appointment' saloon.id %}" class="btn btn-primary">Make Appointment</a>
-          <form action="" style="display: flex; flex-direction: column; align-items: center; width:100%; margin-top:20px; border-top: 2px solid black;" >
+          <form id="rate_form" method="post" action="{% url 'customer-rate-saloon' saloon_id=saloon.id style_id=style_id %}" style="display: flex; flex-direction: column; align-items: center; width:100%; margin-top:20px; border-top: 2px solid black;" >
+            {% csrf_token %}
             <h3>What is your review ?</h3>
             <div class="rating"> <input type="radio" name="rating" value="5" id="5"><label for="5">☆</label> <input type="radio" name="rating" value="4" id="4"><label for="4">☆</label> <input type="radio" name="rating" value="3" id="3"><label for="3">☆</label> <input type="radio" name="rating" value="2" id="2"><label for="2">☆</label> <input type="radio" name="rating" value="1" id="1"><label for="1">☆</label>
             </div>
           <input placeholder="Add your comment" style="width:50%;" type="text" name="comment" class="form-control">
-              <button class="btn btn-primary" style="width:50%; margin-top:10px;"  type="button">Submit review</button>
+              <button id="rate-btn" class="btn btn-primary" style="width:50%; margin-top:10px;"  type="submit">Submit review</button>
               </form>
           {% endif %}
 <!--    <a href="popular_salons.html" style="color: grey">Back TO Salons</a>-->
@@ -722,6 +726,35 @@ th {
 </footer>
   </div>
   <!--content end-->
+
+  <!-- javascript -->
+  <script>
+    const rate_form = document.getElementById('rate_form')
+    const init = async()=>{
+    try{
+    
+        const reponse = await fetch("{% url 'rate-saloon' saloon.id %}",{
+          method:'GET',
+          
+        } )
+        const responseData = await reponse.json()
+        console.log(responseData)
+        if (responseData.can_rate){
+          rate_form.classList.setAttribute("hidden", false);
+        }else{
+          console.log(rate_form.classList.length)
+
+          rate_form.setAttribute("hidden", true);
+        
+        }
+    }catch(e){
+      console.log(e)
+    }}
+    
+      init()
+  
+   
+  </script>
 
 </body>
 

@@ -4,7 +4,8 @@ from .views import (home_page, CreateCustomerAccount, DeletePicture,
                     DisplayServices, CreateService, CreateStyles, ServiceStyles, StylesPictures,
                     DisplaySaloon, DisplaySaloonServicesToCustomer, SearchSaloon, MakeAppointment,
                     GetStylesFromServiceAjax, ListAppointments, AppointmentDetails, CustomerAppointments,
-                    CustomerAppointmentDetails
+                    CustomerAppointmentDetails, RateSaloon, CheckRateSaloon, QuickAuthentication,
+                    AnnouncementBoard,
                     )
 urlpatterns = [
 
@@ -31,9 +32,12 @@ urlpatterns = [
     path('saloon/appointment-details/<int:appointment_id>', AppointmentDetails.as_view(), name="appointment-details"),
     path('saloon/update-appointment/<int:appointment_id>/<str:accepted>',
          ListAppointments.as_view(), name="accept-decline-appointment"),
+    path('customer/rating/<int:saloon_id>/<int:style_id>', RateSaloon.as_view(), name="customer-rate-saloon"),
+    path('customer/quick-authentication/', QuickAuthentication.as_view(), name="quick-auth"),
 
-
+    path('admin/announcement-board/', AnnouncementBoard.as_view(), name="announcement-board"),
     # ajax call
-    path('ajax/styles/<int:service_id>', GetStylesFromServiceAjax.as_view(), name="get-styles-ajax")
+    path('ajax/styles/<int:service_id>', GetStylesFromServiceAjax.as_view(), name="get-styles-ajax"),
+    path('ajax/rating/<int:saloon_id>', CheckRateSaloon.as_view(), name="rate-saloon")
 
 ]

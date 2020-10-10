@@ -441,14 +441,14 @@
 <div class="w3-panel w3-blue ">
   <p>Notice Board</p>
 </div><br>
-{% if notifications %}
+
     {% for notification in notifications %}
       <div class="alert">
         <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
-        <strong>october 10,2020 || By : Stranger</strong><br> {{notification.message}}
+        <strong>{{notification.date}} || By : {{notification.origin.email}}</strong><br> {{notification.message}}
       </div>
     {% endfor %}
-{% endif %}
+
 
     <br><br><br>
 
