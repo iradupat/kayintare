@@ -346,7 +346,11 @@
   <!--content start-->
   <div class="content">
     <br><br><br><br><br>
-
+    {% if saloon.approved == False %}
+      <div class="alert alert-primary" role="alert">
+          Your saloon account is not yet approved to start working, please waite as we checkout the submitted information.
+      </div>
+    {% endif %}
 
     {% if messages %}
       <div class="alert alert-warning alert-dismissible fade show" role="alert">
@@ -378,7 +382,9 @@
           <div class="card-block">
             <h6 class="m-b-20">Add Services</h6>
             <h2 class="text-right"><i class="fas fa-user-tie f-left"></i></h2>
+             {% if saloon.approved  %}
             <a  style="margin-left:12px;" href="{% url 'services-view' %}">Saloon Services</a>
+            {% endif %}
 
           </div>
         </div>
@@ -390,40 +396,22 @@
           <div class="card-block">
             <h6 class="m-b-20">Add styles</h6>
             <h2 class="text-right"><i class="fas fa-user-tie f-left"></i></h2>
+             {% if saloon.approved %}
             <a  style="margin-left:12px;" href="{% url 'create-style' %}">Service Styles</a>
-
+              {% endif %}
           </div>
         </div>
       </div>
 
-<!--      <div class="col-md-4 col-xl-3">-->
-<!--        <div class="card bg-c-green order-card">-->
-<!--          <div class="card-block">-->
-<!--            <h6 class="m-b-20">Appointments Board</h6>-->
-<!--            <h2 class="text-right"><i class="fas fa-mobile-alt f-left"></i></h2>-->
-<!--            <p><span style="font-size: 20px;">salonOwner phone number</span></p>-->
-<!--            <a style="margin-left:12px;" href="">Appointments</a>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--
-      <div class="col-md-4 col-xl-3">
-        <div class="card bg-c-yellow order-card">
-          <div class="card-block">
-            <h6 class="m-b-20">Location</h6>
-            <h2 class="text-right"><i class="fas fa-calendar-alt f-left"></i></h2>
-            <p><span style="font-size: 20px;"></span></p>
-          </div>
-        </div>
-      </div>
--->
         <div class="col-md-4 col-xl-3">
         <div class="card bg-c-yellow order-card">
           <div class="card-block">
             <h6 class="m-b-20">Appointments Board</h6>
             <h2 class="text-right"><i class="fas fa-calendar-alt f-left"></i></h2>
 <!--            <p><span style="font-size: 20px;">account created at </span></p>-->
+             {% if saloon.approved %}
              <a style="margin-left:12px;" href="{% url 'saloon-appointments' %}">Appointments</a>
+            {% endif %}
           </div>
         </div>
       </div>
@@ -442,12 +430,23 @@
   <p>Notice Board</p>
 </div><br>
 
+    {% if notifications %}
     {% for notification in notifications %}
       <div class="alert">
-        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
-        <strong>{{notification.date}} || By : {{notification.origin.email}}</strong><br> {{notification.message}}
+        <form action="{% url 'update-notification' notification.id %}" method="post">
+          {% csrf_token %}
+          <button class="closebtn btn btn-danger" >
+            <span  onclick="this.parentElement.style.display='none';">&times;</span>
+          </button>
+        </form>
+
+        <strong>{{notification.date|date:'Y-m-d H:i'}} GMT || By : {{notification.origin.email}}</strong><br>
+        <p>
+          {{notification.message}}
+        </p>
       </div>
     {% endfor %}
+    {% endif %}
 
 
     <br><br><br>

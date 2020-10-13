@@ -56,7 +56,12 @@
     .logout_btn:hover {
       background: #0B87A6;
     }
+.pay-form{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
 
+}
     .sidebar {
       background: #2f323a;
       margin-top: 70px;
@@ -488,6 +493,18 @@
       justify-content:space-between;
       color:red;
     }
+
+    #watermark
+{
+font-size:35px;
+text-transform:uppercase;
+ position:relative;
+ bottom:-315px;
+ right:-70px;
+ opacity:0.2;
+ z-index:99;
+ color:black;
+}
   </style>
   <style>
 table {
@@ -600,8 +617,8 @@ JotForm.paymentExtrasOnTheFly([null,null,{"name":"submitForm","qid":"2","text":"
       <h4>SalonOwner First Name</h4>
 
     </center>
-
-  <a href="{% url 'saloon-dashboard' %}"><i class="fas fa-desktop"></i><span>Dashboard</span></a>
+<!-- -->
+ <a href="{% url 'customer-dashboard' %}"><i class="fas fa-desktop"></i><span>Dashboard</span></a>
 
 
   </div>
@@ -618,7 +635,10 @@ JotForm.paymentExtrasOnTheFly([null,null,{"name":"submitForm","qid":"2","text":"
 
 
   <div role="main" class="form-all">
-    <ul class="form-section page-section">
+
+    <ul  class="form-section page-section">
+      <div id="tblCustomers" >
+        <h3 id="watermark">ACCEPTED : {{appointment.saloon}} SALOON</h3>
       <li id="cid_10" class="form-input-wide" data-type="control_head">
         <div class="form-header-group  header-large">
           <div class="header-text httal htvam">
@@ -631,7 +651,7 @@ JotForm.paymentExtrasOnTheFly([null,null,{"name":"submitForm","qid":"2","text":"
             </h1>
             {% else %}
             <h1 id="header_10" class="form-header" data-component="header">
-              Appointment details to {{appointment.saloon}} Saloon
+              Appointment details : {{appointment.saloon}} Saloon
             </h1>
             {% endif %}
           </div>
@@ -687,7 +707,7 @@ JotForm.paymentExtrasOnTheFly([null,null,{"name":"submitForm","qid":"2","text":"
         </label>
 
       </li>
-
+</div>
 {% if appointment.approved == False %}
       {% else %}
       <li class="form-line" data-type="control_button" id="id_2">
@@ -695,8 +715,8 @@ JotForm.paymentExtrasOnTheFly([null,null,{"name":"submitForm","qid":"2","text":"
           <div data-align="auto" class="form-buttons-wrapper form-buttons-auto   jsTest-button-wrapperField">
             <form class="jotform-form" autocomplete="on" method="post" >
             {% csrf_token %}
-              <button id="input" type="submit" class="form-submit-button submit-button jf-form-buttons jsTest-submitField"  data-content="">
-             ACCEPT
+              <button id="btnExport" type="button" class="form-submit-button submit-button jf-form-buttons jsTest-submitField" >
+            PRINT
             </button>
             </form>
 
@@ -705,9 +725,21 @@ JotForm.paymentExtrasOnTheFly([null,null,{"name":"submitForm","qid":"2","text":"
 {% endif %}
 
       </li>
-      <li style="display:none">
-        Should be Empty:
-        <input type="text" name="website" value="" />
+      <li id="pay-form" style="display:none; background-color: #125688;" class="form-line">
+        <!-- Should be Empty:
+        <input type="text" name="website" value="" /> -->
+        
+          <h3 style="color: #ffdf3d; font-weight: bold;">PAY WITH MOMO</h3>
+          <form  class="pay-form" action="{% url 'payment-view' appointment.id %}" method="POST">
+            {% csrf_token %}
+            <input placeholder="Ex: 0789000000" class="form-control" type="number" id="phone" name="phone"  required/>
+            <button class="btn btn-primary" style="margin-left: 12px; display: flex; flex-direction: row; width: 200px; justify-content: space-evenly;" type="submit">
+                <!-- <p style="color: #ffdf3d; font-weight: bold;">Pay with MOMO</p> -->
+                <img style="width: 170px; height: 25px;" src="https://inyarwanda.com/app/webroot/img/201906/images/new-9651741560778259.jpg" alt="">
+            </button>
+          </form>
+    
+        
       </li>
     </ul>
   </div>
@@ -758,7 +790,32 @@ JotForm.paymentExtrasOnTheFly([null,null,{"name":"submitForm","qid":"2","text":"
             document.getElementById('delete-button').type="submit"
         }
     })
+
+
+
   </script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.22/pdfmake.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+    <script type="text/javascript">
+        $("body").on("click", "#btnExport", function () {
+            document.getElementById('btnExport').style.display="none";
+            document.getElementById('pay-form').style.display="block";
+            html2canvas($('#tblCustomers'), {
+                onrendered: function (canvas) {
+                    var data = canvas.toDataURL();
+                    var docDefinition = {
+                        content: [{
+                            image: data,
+                            width: 500
+                        }]
+                    };
+                    pdfMake.createPdf(docDefinition).download("receipt.pdf");
+                }
+            });
+        });
+
+    </script>
 </body>
 
 </html>

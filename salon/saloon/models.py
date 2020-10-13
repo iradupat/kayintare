@@ -143,7 +143,7 @@ class Rating(models.Model):
 
 class Notification(models.Model):
     origin = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, related_name="origins")
-    message = models.CharField(max_length=200)
+    message = models.TextField(max_length=2200)
     destination = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, related_name="destinations")
     seen = models.BooleanField(default=False)
     date = models.DateTimeField(auto_now=True)
@@ -177,7 +177,15 @@ class Appointment(models.Model):
     comment = models.CharField(max_length=200, default="")
     deleted = models.BooleanField(default=False)
     seen = models.BooleanField(default=False)
+    archived = models.BooleanField(default=False)
     # def __str__(self):
     #     return self.client.owner.first_name+" to "+self.saloon.saloon_name+' saloon at '+str(self.time)
 
 
+# class Payment(models.Model):
+#     statusDescription = models.CharField(max_length=100)
+#     spTransactionId = models.CharField(max_length=100)
+#     walletTransactionId = models.CharField(max_length=100)
+#     chargedCommission = models.CharField(max_length=100)
+#     transactionId = models.CharField(max_length=100)
+#     status = models.CharField(max_length=100)

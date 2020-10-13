@@ -465,8 +465,17 @@
 {% if notifications %}
     {% for notification in notifications %}
       <div class="alert">
-        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
-        <strong>{{notification.date}} || By : {{notification.origin.email}}</strong><br> {{notification.message}}
+        <form action="{% url 'update-notification' notification.id %}" method="post">
+          {% csrf_token %}
+          <button class="closebtn btn btn-danger" >
+            <span  onclick="this.parentElement.style.display='none';">&times;</span>
+          </button>
+        </form>
+
+        <strong>{{notification.date|date:'Y-m-d H:i'}} GMT || By : {{notification.origin.email}}</strong><br>
+        <p>
+          {{notification.message}}
+        </p>
       </div>
     {% endfor %}
     {% endif %}

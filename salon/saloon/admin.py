@@ -1,8 +1,7 @@
 from django.contrib import admin
 from .models import (ClientAccount, CustomUser,
                     Notification,File, ManagerAccount,
-                    Saloon, Style, Rating, SaloonService,
-                     Appointment,)
+                    Saloon, Style, Rating, SaloonService,)
 # Register your models here.
 
 
@@ -35,12 +34,12 @@ class SaloonServiceAdmin(admin.ModelAdmin):
     search_fields = ['name', 'saloon__saloon_name']
 
 
-class AppointMentAdmin(admin.ModelAdmin):
-    list_display = ['time', 'client', 'saloon', 'approved']
-    search_fields = ['time', 'client__owner__first_name', 'saloon__saloon_name']
+# class AppointMentAdmin(admin.ModelAdmin):
+#     list_display = ['time', 'client', 'saloon', 'approved']
+#     search_fields = ['time', 'client__owner__first_name', 'saloon__saloon_name']
 
 
-admin.site.register(Appointment, AppointMentAdmin)
+# admin.site.register(Appointment, AppointMentAdmin)
 admin.site.register(SaloonService, SaloonServiceAdmin)
 admin.site.register(ManagerAccount, ManagerAccountAdmin)
 admin.site.register(Notification)

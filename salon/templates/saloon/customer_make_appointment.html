@@ -1490,13 +1490,18 @@ for (var i = 0; i < all_spc.length; i++)
   let new_close = '00:00'
   // const openHours = new Date(open)
   console.log(open)
+  new_open = `${getNumbers(open)}:00`
+  new_close = `${getNumbers(close)+12}:00`
   if(close.includes('p.m')){
     new_close = `${getNumbers(close)+12}:00`
+  }
+   if(open.includes('p.m')){
+    new_open = `${getNumbers(open)+12}:00`
   }
  
   jQuery('#datetimepicker').datetimepicker({
     //format:"y-M-d'T'H:m",
-    minTime:open,
+    minTime:new_open,
     maxTime:new_close,
     // minDate: `+${new Date().getFullYear()}/${new Date().getMonth()}/${new Date().getDate()+1}`
     minDate:'+1970/01/2'

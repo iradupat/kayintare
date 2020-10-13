@@ -549,7 +549,7 @@ th {
 
     </center>
 
-  <a href="{% url 'saloon-dashboard' %}"><i class="fas fa-desktop"></i><span>Dashboard</span></a>
+  <a href="{% url 'customer-dashboard' %}"><i class="fas fa-desktop"></i><span>Dashboard</span></a>
 
 
   </div>
@@ -560,7 +560,7 @@ th {
   <div class="content">
     <br><br><br><br><br>
 
-    <h2 style="color: grey;text-align: center;">Below are the active salons salons</h2>
+    <h2 style="color: grey;text-align: center;">YOUR APPOINTMENTS</h2>
 
 <table>
   <tr>
@@ -570,6 +570,7 @@ th {
     <th>Amount to be Paid</th>
       <th>Approved</th>
     <th>Reservation Date</th>
+    <th>Archive</th>
 <!--    <th>Reservation Time</th>-->
      <th>Details</th>
   </tr>
@@ -579,6 +580,7 @@ th {
 
     <td>{{appointment.style.service}}</td>
     <td>{{appointment.style}}</td>
+
     <td>{{appointment.style.service.price}} frw</td>
           {% if appointment.approved %}
           <td>APPROVED</td>
@@ -586,6 +588,15 @@ th {
           <td>NOT APPROVED</td>
           {% endif %}
     <td>{{appointment.time |date:"H:m  D d M Y" }}</td>
+    <td>
+      <form action="{% url 'update-appointment' appointment.id %}" method="post">
+        {% csrf_token %}
+       <button class="btn btn-primary" >
+         <i class="material-icons">archive</i>
+       </button>
+      </form>
+
+    </td>
 <!--    <td>16:30'</td>-->
     <td><a href="{% url 'customer-appointment-details' appointment.id %}"   ><i class="material-icons">arrow_forward</i></a></td>
   </tr>

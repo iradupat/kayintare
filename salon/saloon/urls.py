@@ -1,11 +1,11 @@
 from django.urls import path
-from .views import (home_page, CreateCustomerAccount, DeletePicture,
+from .views import (home_page, CreateCustomerAccount, DeletePicture, get_report,
                     LoginView, CreateManagerAccount, CustomerDashboard, ManagerDashboard,
                     DisplayServices, CreateService, CreateStyles, ServiceStyles, StylesPictures,
                     DisplaySaloon, DisplaySaloonServicesToCustomer, SearchSaloon, MakeAppointment,
                     GetStylesFromServiceAjax, ListAppointments, AppointmentDetails, CustomerAppointments,
                     CustomerAppointmentDetails, RateSaloon, CheckRateSaloon, QuickAuthentication,
-                    AnnouncementBoard,
+                    AnnouncementBoard, PaymentView, ArchiveNotification, ArchiveAppointment
                     )
 urlpatterns = [
 
@@ -34,10 +34,13 @@ urlpatterns = [
          ListAppointments.as_view(), name="accept-decline-appointment"),
     path('customer/rating/<int:saloon_id>/<int:style_id>', RateSaloon.as_view(), name="customer-rate-saloon"),
     path('customer/quick-authentication/', QuickAuthentication.as_view(), name="quick-auth"),
-
+    path('saloon/report/', get_report, name="admin-report"),
     path('admin/announcement-board/', AnnouncementBoard.as_view(), name="announcement-board"),
+    path('update/notification/<int:notification_id>', ArchiveNotification.as_view(), name="update-notification"),
+    path('update/appointment/<int:appointment_id>', ArchiveAppointment.as_view(), name='update-appointment'),
     # ajax call
     path('ajax/styles/<int:service_id>', GetStylesFromServiceAjax.as_view(), name="get-styles-ajax"),
-    path('ajax/rating/<int:saloon_id>', CheckRateSaloon.as_view(), name="rate-saloon")
+    path('ajax/rating/<int:saloon_id>', CheckRateSaloon.as_view(), name="rate-saloon"),
+    path('payment/<int:appointment_id>', PaymentView.as_view(), name='payment-view')
 
 ]

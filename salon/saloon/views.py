@@ -1,4 +1,7 @@
+import ast
 import json
+
+from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail as sm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.files.storage import FileSystemStorage
@@ -15,6 +18,7 @@ import uuid
 from django.contrib import messages
 import os
 from .Serializer import serialize_style
+import requests
 
 import datetime
 # Create your views here.
@@ -51,19 +55,35 @@ class ManagerDashboard(View, LoginRequiredMixin):
         saloon = Saloon.objects.get(owner=request.user)
         notifications = Notification.objects.filter(destination=request.user, seen=False)
         # Notification.objects.filter(destination=request.user, seen=False).update(seen=True)
-        for notification in notifications:
-            notification.seen = True
-            notification.save()
+        # for notification in notifications:
+        #     notification.seen = True
+        #     notification.save()
         return render(request, 'saloon/salonOwner_dashboard.html', {"saloon": saloon, "notifications": notifications})
+
+
+class ArchiveNotification(View, LoginRequiredMixin):
+    def post(self, request, notification_id):
+        try:
+
+            notification = Notification.objects.get(id=notification_id)
+            notification.seen=True
+            notification.save()
+            if ClientAccount.objects.filter(owner=request.user).exists():
+                return redirect('customer-dashboard')
+            else:
+                return redirect('saloon-dashboard')
+        except Exception as e:
+            messages.error(request, str(e))
+            return redirect('home-page')
 
 
 class CustomerDashboard(View, LoginRequiredMixin):
     def get(self, request):
         customer = ClientAccount.objects.get(owner=request.user)
         notifications = Notification.objects.filter(destination=request.user, seen=False)
-        for notification in notifications:
-            notification.seen = True
-            notification.save()
+        # for notification in notifications:
+        #     notification.seen = True
+        #     notification.save()
         # Notification.objects.filter(destination=request.user, seen=False).update(seen=True)
         appointments = Appointment.objects.filter(client=customer, deleted=False, approved=True, seen=False)
         badge = 0
@@ -450,7 +470,6 @@ class GetStylesFromServiceAjax(View, LoginRequiredMixin):
             styles_list = [serialize_style(style) for style in styles]
             return JsonResponse({"styles": styles_list})
         except Exception as e:
-            print(str(e))
             return JsonResponse({"error": str(e)}, status=500)
 
 
@@ -502,6 +521,26 @@ class AppointmentDetails(View, LoginRequiredMixin):
             return redirect('home-page')
 
 
+class ArchiveAppointment(View, LoginRequiredMixin):
+    def post(self, request, appointment_id):
+        try:
+            appointment = Appointment.objects.get(id=appointment_id)
+        except Exception as e:
+            print(str(e))
+            messages.error(request, str(e))
+            return redirect('home-page')
+
+        appointment.archived = True
+        appointment.save()
+
+        return redirect('customer-appointments')
+
+
+
+
+
+
+
 class CustomerAppointments(View, LoginRequiredMixin):
     def get(self, request):
         try:
@@ -510,7 +549,7 @@ class CustomerAppointments(View, LoginRequiredMixin):
             messages.error(request, 'Can not access this page')
             return redirect('home-page')
 
-        appointments = Appointment.objects.filter(client=customer)
+        appointments = Appointment.objects.filter(client=customer, archived=False)
         return render(request, 'saloon/manage_appointment.html', {"appointments": appointments})
 
 
@@ -601,10 +640,80 @@ class AnnouncementBoard(View, LoginRequiredMixin):
                 return redirect('announcement-board')
         else:
             clients = ClientAccount.objects.all()
-            print('=============================================0000000000000000================')
-            print(clients)
-            if len(clients)>0:
+            if len(clients) > 0:
                 for client in clients:
                     Notification.objects.create(destination=client.owner, message=message, origin=request.user)
-                    messages.success(request, 'There is no client account yet!')
+                    messages.success(request, 'Message sent successfully!')
                     return redirect('announcement-board')
+            else:
+                messages.success(request, 'There is no client account yet!')
+                return redirect('announcement-board')
+
+
+class PaymentView(View, LoginRequiredMixin):
+
+    def post(self, request, appointment_id, ):
+        try:
+            client = ClientAccount.objects.get(owner=request.user)
+            appointment = Appointment.objects.get(id=appointment_id)
+        except Exception as e:
+            print(str(e))
+            messages.error(request, str(e))
+            return redirect('home-page')
+
+        phone = request.POST.get('phone')
+        headers = {
+            "Content-type": "application/json"
+        }
+        pload = json.dumps({
+                    "telephoneNumber": "25"+phone,
+                    "amount": int(appointment.style.service.price),
+                    "organizationId": "06418048-c35a-4e9b-84cf-62a20dc0ad2d",
+                    "callbackUrl": "http://myonlineprints.com/payments/callback",
+                    "description": "Payment for Saloon Services",
+                    "transactionId": uuid.uuid4().hex[:6].upper()
+                })
+        r = requests.post('https://opay-api.oltranz.com/opay/paymentrequest', data=pload, headers=headers)
+        if r.status_code == 200:
+            content = r.content.decode("UTF-8")
+            my_data = ast.literal_eval(content)
+            print(my_data)
+            if my_data.get('code') == '200':
+                # Payment.objects.create(saloon=saloon, client=client, amount=amount)
+                messages.success(request, my_data.get('description'))
+                return redirect('customer-dashboard')
+            else:
+                messages.error(request, my_data.get('description'))
+                return redirect('customer-appointment-details', appointment_id=appointment_id)
+        else:
+            print(r)
+            messages.error(request, "Can not perform this payment for now")
+            return redirect('customer-dashboard')
+
+
+@login_required
+def get_report(request):
+    try:
+        saloon = Saloon.objects.get(owner=request.user)
+    except:
+        messages.error(request, 'Not a saloon manager!')
+        return redirect('home-page')
+    value = request.POST.get('value')
+    filter_type = request.POST.get('filter')
+    if filter_type == "name":
+        appointments = Appointment.objects.filter(client__owner__icontains=filter.value, saloon=saloon)
+        return render(request, 'saloon/reports.html', {"appointments": appointments})
+    elif filter_type == "dates":
+        if value == "today":
+            appointments = Appointment.objects.filter(time__date=datetime.datetime.date(),
+                                                      time__month=datetime.datetime.month,
+                                                      time__year=datetime.datetime.year,
+                                                      saloon=saloon)
+            return render(request, 'saloon/reports.html', {"appointments": appointments})
+        elif filter_type == "month":
+            appointments = Appointment.objects.filter(time__month=datetime.datetime.month,
+                                                      time__year=datetime.datetime.year,
+                                                      saloon=saloon)
+            return render(request, 'saloon/reports.html', {"appointments": appointments})
+
+
