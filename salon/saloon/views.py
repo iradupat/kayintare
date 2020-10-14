@@ -10,6 +10,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views import View
 
+from saloon.Form import SearchAppointment
 from saloon.models import SaloonService, Style, File, Rating, Appointment
 from .Form import RegisterClientOrAdminForm, LoginForm, RegisterSaloonForm
 from .models import ClientAccount, CustomUser, ManagerAccount, Saloon, Notification
@@ -19,7 +20,7 @@ from django.contrib import messages
 import os
 from .Serializer import serialize_style
 import requests
-
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 import datetime
 # Create your views here.
 # tools
@@ -35,6 +36,13 @@ def make_date_time(date):
     minuets = hours.split(':')[1]
     final_date = datetime.datetime(int(year), int(month), int(day), int(hour), int(minuets))
     return final_date
+
+
+def find_sum(list):
+    sum = 0
+    for amount in list:
+        sum = sum + amount
+    return sum
 
 
 def home_page(request, *args, **kwargs):
@@ -381,7 +389,7 @@ class DeletePicture(View, LoginRequiredMixin):
 class DisplaySaloon(View, LoginRequiredMixin):
     def get(self, request):
         try:
-            ratings = Rating.objects.filter(rate__gte=3)
+            ratings = Rating.objects.filter()
             saloons = []
             if ratings.exists():
                 for rating in ratings:
@@ -536,11 +544,6 @@ class ArchiveAppointment(View, LoginRequiredMixin):
         return redirect('customer-appointments')
 
 
-
-
-
-
-
 class CustomerAppointments(View, LoginRequiredMixin):
     def get(self, request):
         try:
@@ -692,28 +695,49 @@ class PaymentView(View, LoginRequiredMixin):
 
 
 @login_required
-def get_report(request):
+def get_report(request, case):
     try:
         saloon = Saloon.objects.get(owner=request.user)
     except:
         messages.error(request, 'Not a saloon manager!')
         return redirect('home-page')
-    value = request.POST.get('value')
-    filter_type = request.POST.get('filter')
-    if filter_type == "name":
-        appointments = Appointment.objects.filter(client__owner__icontains=filter.value, saloon=saloon)
-        return render(request, 'saloon/reports.html', {"appointments": appointments})
-    elif filter_type == "dates":
-        if value == "today":
-            appointments = Appointment.objects.filter(time__date=datetime.datetime.date(),
-                                                      time__month=datetime.datetime.month,
-                                                      time__year=datetime.datetime.year,
-                                                      saloon=saloon)
-            return render(request, 'saloon/reports.html', {"appointments": appointments})
-        elif filter_type == "month":
-            appointments = Appointment.objects.filter(time__month=datetime.datetime.month,
-                                                      time__year=datetime.datetime.year,
-                                                      saloon=saloon)
-            return render(request, 'saloon/reports.html', {"appointments": appointments})
+    page = request.GET.get('page', 1)
+    title = "APPOINTMENTS "
+    if case == "TODAY":
+        title += " FOR TODAY"
+        appointments_list = Appointment.objects.filter(saloon=saloon, time__gte=datetime.datetime.now().date())
+    elif case == "THIS_MONTH":
+        title += " OF THIS MONTH"
+        appointments_list = Appointment.objects.filter(saloon=saloon ,time__month=int(datetime.datetime.now().month),
+                                                  time__year=datetime.datetime.now().year)
+    elif case == "THIS_YEAR":
+        title += " OF THIS YEAR"
+        appointments_list = Appointment.objects.filter(saloon=saloon ,time__year=datetime.datetime.now().year)
+    elif case == "BY_DATE":
 
+        data_form = SearchAppointment(data=request.GET)
+        if data_form.is_valid():
+            date = data_form.cleaned_data.get('date')
+            title += " : "+str(date)
+
+            appointments_list = Appointment.objects.filter(time__date=date)
+            print(appointments_list)
+        else:
+            messages.error(request, 'Enter a valid date!')
+            return redirect('admin-report', case="TODAY")
+
+    accepted = appointments_list.filter(approved=True).count()
+    declined = appointments_list.filter(approved=False).count()
+    the_list = [item.style.service.price for item in appointments_list]
+    total = find_sum(the_list)
+    paginator = Paginator(appointments_list, 10)
+    try:
+        appointments = paginator.page(page)
+    except PageNotAnInteger:
+        appointments = paginator.page(1)
+    except EmptyPage:
+        appointments = paginator.page(paginator.num_pages)
+
+    return render(request, 'saloon/saloon_report.html',
+        {"appointments": appointments, "accepted": accepted, "declined": declined, "total": total, "title": title})
 

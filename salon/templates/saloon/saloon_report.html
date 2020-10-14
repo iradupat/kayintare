@@ -7,6 +7,17 @@
   <title>LazyCoder || elie</title>
 
   <style media="screen">
+  #table-list{
+    list-style: none;
+    background-color: #519c3e;
+    border-radius: 3px;
+  }
+  .list-item-table{
+    margin: 5px;
+    font-size: 15px;
+    font-weight: bold;
+    color: white;
+  }
     a:link {
       text-decoration: none;
     }
@@ -544,13 +555,13 @@ th {
   <div class="sidebar">
     <center>
 
-      <img src="assets/images/salonOwner.png" class="profile_image" alt="salonOwner">
-      <h4>SalonOwner First Name</h4>
+      <img src="{% static 'assets/images/salonOwner.png' %}" class="profile_image" alt="salonOwner">
+      <h4>Customer First Name</h4>
 
     </center>
 
-  <a href="{% url 'customer-dashboard' %}"><i class="fas fa-desktop"></i><span>Dashboard</span></a>
-
+  <a href="{% url 'saloon-dashboard' %}"><i class="fas fa-desktop"></i><span>Dashboard</span></a>
+<!--    <a href="manage_salon.html"><i class="fas fa-desktop"></i><span>Manage your Salon</span></a>-->
 
   </div>
   <!--sidebar end-->
@@ -559,54 +570,130 @@ th {
   <!--content start-->
   <div class="content">
     <br><br><br><br><br>
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+      <strong>{{message}}</strong>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    {% endfor %}
+    {% endif %}
 
-    <h2 style="color: grey;text-align: center;">YOUR APPOINTMENTS</h2>
+    {% if appointments|length == 0 %}
+    <div class="alert alert-primary" role="alert">
+      No out puts found!
+    </div>
+    {% endif %}
+    <h2 style="color: grey;text-align: center;">{{title}}</h2>
+    <div class="row">
+      <div class="col">
+        <div class="dropdown">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            FILTER THE LIST
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" href="{% url 'admin-report' 'TODAY' %}">TODAY</a>
+            <a class="dropdown-item" href="{% url 'admin-report' 'THIS_MONTH' %}">THIS MOTH</a>
+            <a class="dropdown-item" href="{% url 'admin-report' 'THIS_YEAR' %}">THIS YEAR</a>
+          </div>
+        </div>
 
+
+      </div>
+      <div class="col"></div>
+      <div class="col">
+        <form action="{% url 'admin-report' 'BY_DATE' %}" method="get" >
+          <div class="row">
+            <div class="col">
+              <input type="date" placeholder="Search by Date " name="date" class="form-control">
+            </div>
+            <div class="col">
+                <button class="btn btn-primary">
+                    Search
+                </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    
 <table>
   <tr>
-
-    <th>Service Selected</th>
-    <th>Style chosen</th>
-    <th>Amount to be Paid</th>
-      <th>Approved</th>
-    <th>Reservation Date</th>
-    <th>Archive</th>
-<!--    <th>Reservation Time</th>-->
-     <th>Details</th>
+    <th>NAMES</th>
+    <th>DATE</th>
+    <th>AMOUNT</th>
+    <th>PHONE NUMBER</th>
+    <th>STYLE/SERVICE</th>
+    <th>ACCEPTED</th>
   </tr>
+    {% for appointment in appointments %}
+          <tr>
+            <td>{{appointment.client.owner}}</td>
+            <td>{{appointment.time|date:'Y-m-d H:i'}}+GMT</td>
+            <td>{{appointment.style.service.price}} Frw</td>
+            <td>{{appointment.client.owner.phone}}</td>
+            <td>{{appointment.style.name}}/{{appointment.style.service}}</td>
+            <td>{{appointment.approved}}</td>
+<!--            <td><a href="salonOwner_respond_claiming.html"><i class="material-icons">reply</i></a></td>-->
+          </tr>
+    {% endfor %}
 
-  {% for appointment in appointments %}
-      <tr>
-
-    <td>{{appointment.style.service}}</td>
-    <td>{{appointment.style}}</td>
-
-    <td>{{appointment.style.service.price}} frw</td>
-          {% if appointment.approved %}
-          <td>APPROVED</td>
-          {% else %}
-          <td>NOT APPROVED</td>
-          {% endif %}
-    <td>{{appointment.time |date:"H:m  D d M Y" }}</td>
+  <tr>
     <td>
-      <form action="{% url 'update-appointment' appointment.id %}" method="post">
-        {% csrf_token %}
-       <button class="btn btn-primary" title="Archive">
-         <i class="material-icons">archive</i>
-       </button>
-      </form>
+        <ul id="table-list">
+            <li class="list-item-table">TOTAL AMOUNT COLLECTED:<strong style="color: black;"> {{total}} Frw</strong></li>
+            <li class="list-item-table" style="color: #a33433;">{{declined}} DECLINED </li>
+            <li class="list-item-table">{{accepted}} ACCEPTED</li>
+        </ul>
 
     </td>
-<!--    <td>16:30'</td>-->
-    <td>
-      <a href="{% url 'customer-appointment-details' appointment.id %}" title="Details" >
-        <i class="material-icons">arrow_forward</i>
-      </a>
-    </td>
+<!--    <td>shemaalex@gmail.com</td>-->
+<!--    <td>+250784561329</td>-->
+<!--    <td> Welcom home</td>-->
+<!--    <td>october 15,2020</td>-->
+<!--    <td><a href="salonOwner_respond_claiming.html"><i class="material-icons">reply</i></a></td>-->
   </tr>
-  {% endfor %}
+  <tr>
+<!--    <td>Alex Shema</td>-->
+<!--    <td>shemaalex@gmail.com</td>-->
+<!--    <td>+250784561329</td>-->
+<!--    <td> flash back </td>-->
+<!--    <td>october 15,2020</td>-->
+<!--    <td><a href="salonOwner_respond_claiming.html"><i class="material-icons">reply</i></a></td>-->
+<!--  </tr>-->
+<!--  <tr>-->
+<!--    <td>Alex Shema</td>-->
+<!--    <td>shemaalex@gmail.com</td>-->
+<!--    <td>+250784561329</td>-->
+<!--    <td> What's going on </td>-->
+<!--    <td>october 15,2020</td>-->
+<!--    <td><a href="salonOwner_respond_claiming.html"><i class="material-icons">reply</i></a></td>-->
+<!--  </tr>-->
 
 </table>
+{% if appointments.has_other_pages %}
+  <ul class="pagination">
+    {% if appointments.has_previous %}
+      <li><a href="?page={{ appointments.previous_page_number }}">&laquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&laquo;</span></li>
+    {% endif %}
+    {% for i in appointments.paginator.page_range %}
+      {% if appointments.number == i %}
+        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+      {% else %}
+        <li><a href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+    {% endfor %}
+    {% if appointments.has_next %}
+      <li><a href="?page={{ appointments.next_page_number }}">&raquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&raquo;</span></li>
+    {% endif %}
+  </ul>
+{% endif %}
 
 
     <br><br><br>
@@ -635,56 +722,6 @@ th {
 </footer>
   </div>
   <!--content end-->
-
-<!--  modal -->
-
-
-  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Accept or decline the appointment</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div id="card_body" class="modal-body">
-        <input type="text" id="appointment_id" name="appointment_id" class="form-control" hidden>
-        <h5 id="names"></h5>
-
-
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Accept</button>
-        <button type="button" class="btn btn-primary">Declines</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<!--  end -->
-
-
-
-  <script>
-
-      const setData =(id)=>{
-      console.log('Hello')
-          document.getElementById('card_body').innerHtml=`
-             <input type="text" value="${id}" name="appointment_id" class="form-control" hidden>
-
-          `
-        document.getElementById('myModal').aria-hidden=false
-      }
-
-
-
-    $('#myModal').on('shown.bs.modal', function () {
-    $('#myInput').trigger('focus')
-
-   })
-  </script>
 
 </body>
 

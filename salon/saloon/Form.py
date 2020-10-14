@@ -47,3 +47,6 @@ class LoginForm(forms.Form):
     email = forms.EmailField()
     password = forms.CharField()
 
+
+class SearchAppointment(forms.Form):
+    date = forms.DateField(required=True)

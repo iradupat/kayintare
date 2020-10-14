@@ -410,7 +410,20 @@
             <h2 class="text-right"><i class="fas fa-calendar-alt f-left"></i></h2>
 <!--            <p><span style="font-size: 20px;">account created at </span></p>-->
              {% if saloon.approved %}
-             <a style="margin-left:12px;" href="{% url 'saloon-appointments' %}">Appointments</a>
+             <a style="margin-left:12px;" href="{% url 'saloon-appointments' %}">Pending Request</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+       <div class="col-md-4 col-xl-3">
+        <div class="card bg-c-yellow order-card">
+          <div class="card-block">
+            <h6 class="m-b-20">Appointments Board</h6>
+            <h2 class="text-right"><i class="fas fa-calendar-alt f-left"></i></h2>
+<!--            <p><span style="font-size: 20px;">account created at </span></p>-->
+             {% if saloon.approved %}
+             <a style="margin-left:12px;" href="{% url 'admin-report' 'TODAY' %}">Appointments</a>
             {% endif %}
           </div>
         </div>
